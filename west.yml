@@ -141,9 +141,9 @@ manifest:
       groups:
         - fs
     - name: hal_alif
-      revision: dave2d_hal
+      revision: eda1ffed574f7e0decb3e201bf3e2b3c01aeb826
       path: modules/hal/alif
-      remote: alif-sirin
+      remote: alif
       groups:
         - hal
     - name: hal_altera
