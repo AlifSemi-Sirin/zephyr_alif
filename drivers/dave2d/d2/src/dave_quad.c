@@ -12,7 +12,8 @@
  *  2010-09-09 MRe  added renderquad functions for solidoutlined etc.
  *  2010-09-27 MRe  fixed quad render function
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -26,13 +27,13 @@
 #include "dave_polyline.h"
 
 /*--------------------------------------------------------------------------*/
-static d2_s32 d2_renderquad_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point x1,
+static d2_s32 d2_renderquad_intern(d2_devicedata * handle, d2_contextdata * ctx, d2_point x1,
 				   d2_point y1, d2_point x2, d2_point y2, d2_point x3, d2_point y3,
 				   d2_point x4, d2_point y4, d2_u32 flags);
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static d2_s32 d2_renderquad_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point x1,
 				   d2_point y1, d2_point x2, d2_point y2, d2_point x3, d2_point y3,
 				   d2_point x4, d2_point y4, d2_u32 flags)
@@ -64,28 +65,25 @@ static d2_s32 d2_renderquad_intern(d2_devicedata *handle, d2_contextdata *ctx, d
 
 	/* catch degenerate quad (collapsed edge) and render a triangle instead */
 	if (0 != (idxm & idym)) {
-		if (0 == (dx1 | dy1)) /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
-		{
+		if (0 == (dx1 | dy1)) { /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
 			return d2_rendertri(handle, x2, y2, x3, y3, x4, y4, flags >> 1);
 		}
-		if (0 == (dx2 | dy2)) /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
-		{
+		if (0 == (dx2 | dy2)) { /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
 			return d2_rendertri(handle, x1, y1, x3, y3, x4, y4,
 					    ((flags & 12u) >> 1) | (flags & 1u));
 		}
-		if (0 == (dx3 | dy3)) /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
-		{
+		if (0 == (dx3 | dy3)) { /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
 			return d2_rendertri(handle, x1, y1, x2, y2, x4, y4,
 					    ((flags & 8u) >> 1) | (flags & 3u));
 		}
-		if (0 == (dx4 | dy4)) /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
-		{
+		if (0 == (dx4 | dy4)) { /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
 			return d2_rendertri(handle, x1, y1, x2, y2, x3, y3, flags & 7u);
 		}
 	}
 
 	/* classify edges (right edge flags) - basically inverted dys
-	 * but using dxs instead of dys for horizontal edges */
+	 * but using dxs instead of dys for horizontal edges
+	 */
 	bR1 = (dy1 == 0) ? (idxm & 1u) : (idym & 1u);
 	bR2 = (dy2 == 0) ? (idxm & 2u) : (idym & 2u);
 	bR3 = (dy3 == 0) ? (idxm & 4u) : (idym & 4u);
@@ -247,7 +245,7 @@ static d2_s32 d2_renderquad_intern(d2_devicedata *handle, d2_contextdata *ctx, d
 	}
 
 	/* bottom-up rendering / left edges are x-decreasing */
-	if (0 != flip) {
+	if (flip != 0) {
 		d2_s32 h = D2_INT4(bbox.ymax - bbox.ymin);
 			/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 		d2_invertlimiter_intern(&edge[0], h);
@@ -277,7 +275,7 @@ static d2_s32 d2_renderquad_intern(d2_devicedata *handle, d2_contextdata *ctx, d
 	D2_DLISTWRITEU(D2_CONTROL, control);
 
 	/* start rendering */
-	if (0 != flip) {
+	if (flip != 0) {
 		d2_startrender_bottom_intern(handle, &bbox, (d2_u32)delay + 1);
 	} else {
 		d2_startrender_intern(handle, &bbox, (d2_u32)delay + 1);
@@ -290,7 +288,7 @@ static d2_s32 d2_renderquad_intern(d2_devicedata *handle, d2_contextdata *ctx, d
  * shared edges do not contribute to vertex tangents. to implement this
  * a set of line/open polyline/closed polyline configurations is used
  * depending on the shared edge configuration
- * */
+ */
 d2_s32 d2_renderquad_outline(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 			     d2_point x3, d2_point y3, d2_point x4, d2_point y4, d2_u32 flags)
 {
@@ -459,7 +457,7 @@ d2_s32 d2_renderquad_outline(d2_device *handle, d2_point x1, d2_point y1, d2_poi
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderquad_solid(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 			   d2_point x3, d2_point y3, d2_point x4, d2_point y4, d2_u32 flags)
 {
@@ -468,16 +466,16 @@ d2_s32 d2_renderquad_solid(d2_device *handle, d2_point x1, d2_point y1, d2_point
 
 	/* HACK: replaced with rendering two triangles */
 	/*
-	  d2_rendertri_solid( handle, x1,y1, x2,y2, x3,y3, flags | d2_edge2_shared );
-	  d2_rendertri_solid( handle, x3,y3, x4,y4, x1,y1, (flags >> 2) | d2_edge2_shared );
-	*/
+	 * d2_rendertri_solid( handle, x1,y1, x2,y2, x3,y3, flags | d2_edge2_shared );
+	 * d2_rendertri_solid( handle, x3,y3, x4,y4, x1,y1, (flags >> 2) | d2_edge2_shared );
+	 */
 
 	return D2_OK;
 }
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderquad_solidoutline(d2_device *handle, d2_point x1, d2_point y1, d2_point x2,
 				  d2_point y2, d2_point x3, d2_point y3, d2_point x4, d2_point y4,
 				  d2_u32 flags)
@@ -497,7 +495,7 @@ d2_s32 d2_renderquad_solidoutline(d2_device *handle, d2_point x1, d2_point y1, d
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderquad_shadow(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 			    d2_point x3, d2_point y3, d2_point x4, d2_point y4, d2_u32 flags)
 {
@@ -517,7 +515,7 @@ d2_s32 d2_renderquad_shadow(d2_device *handle, d2_point x1, d2_point y1, d2_poin
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderquad_solidshadow(d2_device *handle, d2_point x1, d2_point y1, d2_point x2,
 				 d2_point y2, d2_point x3, d2_point y3, d2_point x4, d2_point y4,
 				 d2_u32 flags)

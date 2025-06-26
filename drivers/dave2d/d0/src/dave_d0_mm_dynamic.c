@@ -24,8 +24,8 @@
 #define MSIZE(PTR) _msize(PTR)
 #endif
 
-static unsigned int g_memsum = 0;
-static unsigned int g_numblocks = 0;
+static unsigned int g_memsum;
+static unsigned int g_numblocks;
 
 /*--------------------------------------------------------------------------
  * function_:d0_dyn_allocmem

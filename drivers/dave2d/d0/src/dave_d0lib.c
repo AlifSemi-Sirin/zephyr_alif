@@ -250,7 +250,7 @@ void d0_preparememorymanager(d0_memmanager *mgr, d0_memmanager_type memmanagerty
 /******************************************************************************
  * videomemory and heapmemory manager
  *****************************************************************************/
-static d0_memmanager *videomemory = NULL;
+static d0_memmanager *videomemory;
 static d0_memmanager heapmemory = {NULL, NULL, NULL, NULL};
 
 /******************************************************************************

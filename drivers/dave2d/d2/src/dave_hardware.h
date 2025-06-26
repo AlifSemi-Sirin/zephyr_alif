@@ -9,19 +9,20 @@
  * Changes:
  *  2008-01-14 ASc  changed comments from C++ to C, removed tabs
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #ifndef __1_dave_hardware_h_H
 #define __1_dave_hardware_h_H
 /*--------------------------------------------------------------------------- */
 
-D2_EXTERN d1_device * d2hw_acquire( d2_device *handle, d2_u32 flags );
-D2_EXTERN d2_s32 d2hw_release( d1_device * hwid );
+D2_EXTERN d1_device *d2hw_acquire(d2_device * handle, d2_u32 flags);
+D2_EXTERN d2_s32 d2hw_release(d1_device *hwid);
 
-D2_EXTERN void d2hw_set(d1_device * hwid, d2_u32 index, d2_s32 value);
-D2_EXTERN d2_s32 d2hw_get(d1_device * hwid, d2_u32 index);
+D2_EXTERN void d2hw_set(d1_device *hwid, d2_u32 index, d2_s32 value);
+D2_EXTERN d2_s32 d2hw_get(d1_device *hwid, d2_u32 index);
 
-D2_EXTERN void d2hw_wait(d1_device * hwid);
+D2_EXTERN void d2hw_wait(d1_device *hwid);
 
 /*--------------------------------------------------------------------------- */
 

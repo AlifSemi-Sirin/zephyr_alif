@@ -24,12 +24,12 @@ extern "C" {
 #endif
 #endif
 
-//---------------------------------------------------------------------------
+/* --------------------------------------------------------------------------- */
 extern void *d0_fixed_range_heapalloc(void *ctrlblk, unsigned int size);
 extern unsigned int d0_fixed_range_heapfree(void *ctrlblk, void *ptr);
 extern unsigned int d0_fixed_range_heapmsize(void *ctrlblk, void *ptr);
 extern void d0_fixed_range_setheapmem(void *base, unsigned int size);
-//---------------------------------------------------------------------------
+/* --------------------------------------------------------------------------- */
 #ifdef __cplusplus
 }
 #endif

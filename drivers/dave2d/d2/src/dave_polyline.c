@@ -22,9 +22,9 @@
 
 /*--------------------------------------------------------------------------
  *
- * */
-static D2_INLINE void d2_fixlength(d2_point x1, d2_point y1, d2_point x2, d2_point y2, d2_s32 *dx,
-				   d2_s32 *dy); /* MISRA */
+ */
+static D2_INLINE void d2_fixlength(d2_point x1, d2_point y1, d2_point x2, d2_point y2, d2_s32 * dx,
+				   d2_s32 * dy); /* MISRA */
 
 static d2_s32 d2_renderpolyline2_intern(d2_devicedata *handle, d2_contextdata *ctx,
 					const d2_point *data, const d2_u32 *sflags, d2_u32 count,
@@ -33,7 +33,7 @@ static d2_s32 d2_renderpolyline2_intern(d2_devicedata *handle, d2_contextdata *c
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static D2_INLINE void d2_fixlength(d2_point x1, d2_point y1, d2_point x2, d2_point y2, d2_s32 *dx,
 				   d2_s32 *dy)
 {
@@ -45,7 +45,7 @@ static D2_INLINE void d2_fixlength(d2_point x1, d2_point y1, d2_point x2, d2_poi
 	l = d2_sqrt((d2_u32)((dxi * dxi) + (dyi * dyi)));
 
 	/* normalize to length 16 (for join tangent calculation) */
-	if (0 != l) {
+	if (l != 0) {
 		*dx = (dxi * D2_FIX4(16)) / l;
 		*dy = (dyi * D2_FIX4(16)) / l;
 	} else {
@@ -57,7 +57,7 @@ static D2_INLINE void d2_fixlength(d2_point x1, d2_point y1, d2_point x2, d2_poi
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderpolyline_intern(d2_devicedata *handle, d2_contextdata *ctx, const d2_point *data,
 				const d2_u32 *sflags, d2_u32 count, d2_width w, d2_u32 flags,
 				d2_point soffx, d2_point soffy)
@@ -87,7 +87,7 @@ d2_s32 d2_renderpolyline_intern(d2_devicedata *handle, d2_contextdata *ctx, cons
 	}
 
 	/* check joinstyle */
-	if (0 != joins) {
+	if (joins != 0) {
 		switch (ctx->linejoin) {
 		case d2_lj_none:
 			joins = 0;
@@ -122,7 +122,7 @@ d2_s32 d2_renderpolyline_intern(d2_devicedata *handle, d2_contextdata *ctx, cons
 		startflag = 0;
 
 		/* linejoin at startpoint, need to init deltas */
-		if (0 != joins) {
+		if (joins != 0) {
 			d2_fixlength((d2_point)(data[(count * 2) - 4] + soffx),
 				     (d2_point)(data[(count * 2) - 3] + soffy), px1, py1, &dxm1,
 				     &dym1);
@@ -183,11 +183,10 @@ d2_s32 d2_renderpolyline_intern(d2_devicedata *handle, d2_contextdata *ctx, cons
 			sflag = d2_le_exclude_start | d2_le_exclude_end;
 			sflag &= ~startflag;
 
-			if (0 != joins) {
+			if (joins != 0) {
 				/* check if length is already known */
 				if (0 !=
-				    (dxp1 | dyp1)) /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
-				{
+				    (dxp1 | dyp1)) { /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
 					dx = dxp1;
 					dy = dyp1;
 				} else {
@@ -240,7 +239,7 @@ d2_s32 d2_renderpolyline_intern(d2_devicedata *handle, d2_contextdata *ctx, cons
 			{
 				d2_s32 bSkipSeg;
 
-				if (NULL != sflags) {
+				if (sflags != NULL) {
 					bSkipSeg = (*sflags == d2_sf_skip) ? 1 : 0;
 					sflags++;
 				} else {
@@ -256,7 +255,7 @@ d2_s32 d2_renderpolyline_intern(d2_devicedata *handle, d2_contextdata *ctx, cons
 					/* render segment */
 					sflag |= d2_lei_buffer_first_edge | d2_lei_buffer_last_edge;
 
-					if (0 != dots) {
+					if (dots != 0) {
 						(void)d2_renderline_intern_split(
 							handle, ctx, px1, py1, px2, py2, w, sflag,
 							edge_buffer, &edge_bbox, connectors);
@@ -267,7 +266,7 @@ d2_s32 d2_renderpolyline_intern(d2_devicedata *handle, d2_contextdata *ctx, cons
 								edge_buffer, &edge_bbox);
 						}
 					} else {
-						if (0 != joins) {
+						if (joins != 0) {
 							/* limit corners */
 							sflag |= d2_lei_miter_edge;
 
@@ -297,8 +296,7 @@ d2_s32 d2_renderpolyline_intern(d2_devicedata *handle, d2_contextdata *ctx, cons
 			/* check for line caps */
 			if ((0 == (flags & (d2_le_closed | d2_le_exclude_end))) &&
 			    (i == (count -
-				   2))) /* PRQA S 3382 */ /* $Misra: #MISRA_BUG_ZERO_WRAPAROUND $*/
-			{
+				   2))) { /* PRQA S 3382 */ /* $Misra: #MISRA_BUG_ZERO_WRAPAROUND $*/
 				startflag = d2_le_exclude_end;
 			} else {
 				startflag = 0;
@@ -313,7 +311,7 @@ d2_s32 d2_renderpolyline_intern(d2_devicedata *handle, d2_contextdata *ctx, cons
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static d2_s32 d2_renderpolyline2_intern(d2_devicedata *handle, d2_contextdata *ctx,
 					const d2_point *data, const d2_u32 *sflags, d2_u32 count,
 					const d2_width *w, d2_u32 flags, d2_point soffx,
@@ -369,7 +367,7 @@ static d2_s32 d2_renderpolyline2_intern(d2_devicedata *handle, d2_contextdata *c
 			d2_s32 bSkipSeg;
 
 			/* check segment flag for current segment */
-			if (NULL != sflags) {
+			if (sflags != NULL) {
 				bSkipSeg = (*sflags == d2_sf_skip) ? 1 : 0;
 				sflags++;
 			} else {
@@ -418,7 +416,7 @@ static d2_s32 d2_renderpolyline2_intern(d2_devicedata *handle, d2_contextdata *c
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderpolyline_solid(d2_device *handle, const d2_point *data, d2_u32 count, d2_width w,
 			       d2_u32 flags)
 {
@@ -430,7 +428,7 @@ d2_s32 d2_renderpolyline_solid(d2_device *handle, const d2_point *data, d2_u32 c
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderpolyline_shadow(d2_device *handle, const d2_point *data, d2_u32 count, d2_width w,
 				d2_u32 flags)
 {
@@ -447,7 +445,7 @@ d2_s32 d2_renderpolyline_shadow(d2_device *handle, const d2_point *data, d2_u32 
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderpolyline_outline(d2_device *handle, const d2_point *data, d2_u32 count, d2_width w,
 				 d2_u32 flags)
 {
@@ -460,7 +458,7 @@ d2_s32 d2_renderpolyline_outline(d2_device *handle, const d2_point *data, d2_u32
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderpolyline_solidshadow(d2_device *handle, const d2_point *data, d2_u32 count,
 				     d2_width w, d2_u32 flags)
 {
@@ -484,7 +482,7 @@ d2_s32 d2_renderpolyline_solidshadow(d2_device *handle, const d2_point *data, d2
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderpolyline_solidoutline(d2_device *handle, const d2_point *data, d2_u32 count,
 				      d2_width w, d2_u32 flags)
 {
@@ -504,7 +502,7 @@ d2_s32 d2_renderpolyline_solidoutline(d2_device *handle, const d2_point *data, d
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderpolyline2_solid(d2_device *handle, const d2_point *data, d2_u32 count,
 				const d2_width *w, d2_u32 flags)
 {
@@ -516,7 +514,7 @@ d2_s32 d2_renderpolyline2_solid(d2_device *handle, const d2_point *data, d2_u32 
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderpolyline2_shadow(d2_device *handle, const d2_point *data, d2_u32 count,
 				 const d2_width *w, d2_u32 flags)
 {
@@ -533,7 +531,7 @@ d2_s32 d2_renderpolyline2_shadow(d2_device *handle, const d2_point *data, d2_u32
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderpolyline2_outline(d2_device *handle, const d2_point *data, d2_u32 count,
 				  const d2_width *w, d2_u32 flags)
 {
@@ -546,7 +544,7 @@ d2_s32 d2_renderpolyline2_outline(d2_device *handle, const d2_point *data, d2_u3
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderpolyline2_solidshadow(d2_device *handle, const d2_point *data, d2_u32 count,
 				      const d2_width *w, d2_u32 flags)
 {
@@ -570,7 +568,7 @@ d2_s32 d2_renderpolyline2_solidshadow(d2_device *handle, const d2_point *data, d
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderpolyline2_solidoutline(d2_device *handle, const d2_point *data, d2_u32 count,
 				       const d2_width *w, d2_u32 flags)
 {

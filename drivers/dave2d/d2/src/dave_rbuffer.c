@@ -118,7 +118,8 @@
  * Instead of <d2_executerenderbuffer> a given Dlist can be executed directly by
  * <d2_executedlist>.
  *
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -126,11 +127,12 @@
 #include "dave_rbuffer.h"
 
 /*--------------------------------------------------------------------------*/
-static d2_s32 d2_resizerblayer_intern(const d2_device *handle, d2_rb_layer *layer); /* MISRA */
+static d2_s32 d2_resizerblayer_intern(const d2_device * handle, d2_rb_layer * layer); /* MISRA */
 static void d2_scratchgrowlayer_intern(d2_device *handle);
 
 /*--------------------------------------------------------------------------
- * Group: Renderbuffer Management */
+ * Group: Renderbuffer Management
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_newrenderbuffer
@@ -162,14 +164,14 @@ static void d2_scratchgrowlayer_intern(d2_device *handle);
  *
  * see also:
  *   <d2_getrenderbuffer>, <d2_setdlistblocksize>, <d2_freerenderbuffer>
- * */
+ */
 d2_renderbuffer *d2_newrenderbuffer(d2_device *handle, d2_u32 initialsize, d2_u32 stepsize)
 {
 	d2_rbuffer *rbuffer;
 	d2_s32 bOOM = 0;
 
 	/* error checking */
-	if (NULL == handle) {
+	if (handle == NULL) {
 		return NULL;
 	}
 
@@ -181,7 +183,7 @@ d2_renderbuffer *d2_newrenderbuffer(d2_device *handle, d2_u32 initialsize, d2_u3
 	/* create new display list (/renderbuffer) */
 	rbuffer = (d2_rbuffer *)d2_getmem_p(sizeof(d2_rbuffer));
 
-	if (NULL != rbuffer) {
+	if (rbuffer != NULL) {
 		rbuffer->layer[0].scratch = NULL;
 
 		if (0 != d2_initdlist_intern(handle, &rbuffer->baselist, initialsize)) {
@@ -210,16 +212,16 @@ d2_renderbuffer *d2_newrenderbuffer(d2_device *handle, d2_u32 initialsize, d2_u3
 
 		/* Succeeded */
 		return rbuffer;
-	} else {
-		(void)D2_SETERR(handle, D2_NOMEMORY);
-
-		if (NULL != rbuffer) {
-			d2_freemem_p(rbuffer);
-		}
-
-		/* Failed */
-		return NULL;
 	}
+
+	(void)D2_SETERR(handle, D2_NOMEMORY);
+
+	if (rbuffer != NULL) {
+		d2_freemem_p(rbuffer);
+	}
+
+    /* Failed */
+	return NULL;
 }
 
 /*--------------------------------------------------------------------------
@@ -242,7 +244,7 @@ d2_renderbuffer *d2_newrenderbuffer(d2_device *handle, d2_u32 initialsize, d2_u3
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
  *
- * */
+ */
 d2_s32 d2_freerenderbuffer(d2_device *handle, d2_renderbuffer *buffer)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -299,13 +301,13 @@ d2_s32 d2_freerenderbuffer(d2_device *handle, d2_renderbuffer *buffer)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_selectrenderbuffer(d2_device *handle, d2_renderbuffer *buffer)
 {
 #ifdef D2_USEREGCACHE
 	d2_s32 i;
 #endif
-	d2_dlist *wlist;
+	d2_dlist * wlist;
 	void *current_dlist_start;
 
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -325,7 +327,7 @@ d2_s32 d2_selectrenderbuffer(d2_device *handle, d2_renderbuffer *buffer)
 	}
 
 	/* use internal writelist */
-	if (NULL == buffer) {
+	if (buffer == NULL) {
 		buffer = D2_DEV(handle)->writelist;
 	}
 
@@ -337,9 +339,10 @@ d2_s32 d2_selectrenderbuffer(d2_device *handle, d2_renderbuffer *buffer)
 	wlist = &D2_DRB(buffer)->baselist;
 	D2_DEV(handle)->srccontext = NULL;
 
-	if (0 != wlist->busy) {
+	if (wlist->busy != 0) {
 		/*note - might add a flush here
-		 * list needs reset */
+		 * list needs reset
+		 */
 		wlist->busy = 0;
 		d2_resetdlist_intern(wlist);
 	}
@@ -348,7 +351,7 @@ d2_s32 d2_selectrenderbuffer(d2_device *handle, d2_renderbuffer *buffer)
 		/* low localmem mode: vidmem is already filled */
 		current_dlist_start = wlist->vidmem_blocks->blocks[0];
 	} else if ((0 != (D2_DEV(handle)->hwmemarchitecture & (d1_ma_separated | d1_ma_mapped))) &&
-		   (NULL != wlist->firstblock->vidmem)) {
+		   (wlist->firstblock->vidmem != NULL)) {
 		current_dlist_start = wlist->firstblock->vidmem;
 	} else {
 		current_dlist_start = wlist->firstblock->block;
@@ -359,7 +362,8 @@ d2_s32 d2_selectrenderbuffer(d2_device *handle, d2_renderbuffer *buffer)
 	(void)d2_add_dlistlist_intern(handle, wlist, current_dlist_start);
 
 	/* invalidate register cache at start of new dlist
-	 * (inter-list optimisation is considered too risky) */
+	 * (inter-list optimisation is considered too risky)
+	 */
 #ifdef D2_USEREGCACHE
 	if (0 == (D2_DEV(handle)->flags & d2_df_no_registercaching)) {
 		for (i = 0; i < D2_QUANTITY; i++) {
@@ -410,7 +414,7 @@ d2_s32 d2_selectrenderbuffer(d2_device *handle, d2_renderbuffer *buffer)
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
  *
- * */
+ */
 d2_s32 d2_executerenderbuffer(d2_device *handle, d2_renderbuffer *buffer, d2_u32 flags)
 {
 	d2_s32 errorCode = 0;
@@ -481,13 +485,13 @@ d2_s32 d2_executerenderbuffer(d2_device *handle, d2_renderbuffer *buffer, d2_u32
  *
  * returns:
  *   pointer to internal renderbuffer (or NULL if failed)
- * */
+ */
 d2_renderbuffer *d2_getrenderbuffer(d2_device *handle, d2_s32 index)
 {
 	d2_rbuffer *rbuffer;
 
 	/* error checking */
-	if (NULL == handle) {
+	if (handle == NULL) {
 		return NULL;
 	}
 
@@ -499,7 +503,7 @@ d2_renderbuffer *d2_getrenderbuffer(d2_device *handle, d2_s32 index)
 	/* get buffer */
 	rbuffer = D2_DEV(handle)->renderbuffer[index];
 
-	if (NULL == rbuffer) {
+	if (rbuffer == NULL) {
 		(void)D2_SETERR(handle, D2_INVALIDBUFFER);
 		return NULL;
 	}
@@ -509,7 +513,8 @@ d2_renderbuffer *d2_getrenderbuffer(d2_device *handle, d2_s32 index)
 }
 
 /*--------------------------------------------------------------------------
- * Group: Utility Functions */
+ * Group: Utility Functions
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_startframe
@@ -530,11 +535,12 @@ d2_renderbuffer *d2_getrenderbuffer(d2_device *handle, d2_s32 index)
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_startframe(d2_device *handle)
 {
 	d2_s32 errorCode = 0;
 	d2_dlist *rlist, *wlist;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112 */ /* $Misra: #DEBUG_MACRO $*/
 
 	/* backup current pointers */
@@ -574,7 +580,7 @@ d2_s32 d2_startframe(d2_device *handle)
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_endframe(d2_device *handle)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -619,7 +625,7 @@ d2_s32 d2_endframe(d2_device *handle)
  *   If <d2_adddlist> (d2_al_no_copy) commands have been used these added
  *   dlists are not changed.
  *
- * */
+ */
 extern d2_s32 d2_relocateframe(d2_device *handle, const void *ptr)
 {
 	d2_u32 adrmask;
@@ -640,7 +646,7 @@ extern d2_s32 d2_relocateframe(d2_device *handle, const void *ptr)
 		D2_RETOK(handle);
 	}
 
-	while (NULL != blk) {
+	while (blk != NULL) {
 		d2_u32 argument = 0;
 		d2_dlist_entry *entry = blk->block;
 
@@ -683,8 +689,7 @@ extern d2_s32 d2_relocateframe(d2_device *handle, const void *ptr)
 
 						if ((0 != (argument & 2u)) ||
 						    (0 !=
-						     (argument & 4u))) /* special bit 1 or 2 set? */
-						{
+						     (argument & 4u))) { /* special bit 1 or 2 set? */
 							/* just a flush. keep on reading */
 							entry = (d2_dlist_entry *)((d2_s32 *)entry +
 										   1);
@@ -830,7 +835,7 @@ extern d2_s32 d2_relocateframe(d2_device *handle, const void *ptr)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_dumprenderbuffer(d2_device *handle, d2_renderbuffer *buffer, void **rdata, d2_s32 *rsize)
 {
 	d2_u32 adrmask;
@@ -862,7 +867,7 @@ d2_s32 d2_dumprenderbuffer(d2_device *handle, d2_renderbuffer *buffer, void **rd
 		blk = blk->next;
 	}
 
-	if (0 == used) {
+	if (used == 0) {
 		/* empty buffer */
 		*rdata = NULL;
 		*rsize = 0;
@@ -879,7 +884,7 @@ d2_s32 d2_dumprenderbuffer(d2_device *handle, d2_renderbuffer *buffer, void **rd
 	blk = D2_DEV(handle)->selectedbuffer->baselist.firstblock;
 	lastBlk = D2_DEV(handle)->selectedbuffer->baselist.currentblock;
 
-	while (NULL != blk) {
+	while (blk != NULL) {
 		d2_u32 argument = 0;
 		d2_dlist_entry *entry = blk->block;
 
@@ -894,7 +899,7 @@ d2_s32 d2_dumprenderbuffer(d2_device *handle, d2_renderbuffer *buffer, void **rd
 
 			if (0 != (adrmask & 0x80808080u)) {
 				/* contains special indices */
-				if (0x80808080u == adrmask) {
+				if (adrmask == 0x80808080u) {
 					/* completely empty -> skip */
 					*writePtr = (d2_s32)entry->address.mask;
 					writePtr++;
@@ -917,8 +922,7 @@ d2_s32 d2_dumprenderbuffer(d2_device *handle, d2_renderbuffer *buffer, void **rd
 
 						if ((0 != (argument & 2u)) ||
 						    (0 !=
-						     (argument & 4u))) /* special bit 1 or 2 set? */
-						{
+						     (argument & 4u))) { /* special bit 1 or 2 set? */
 							/* just a flush. keep on reading */
 							*writePtr = (d2_s32)entry->address.mask;
 							writePtr++;
@@ -1029,7 +1033,7 @@ d2_s32 d2_dumprenderbuffer(d2_device *handle, d2_renderbuffer *buffer, void **rd
  *
  * returns:
  *   the number of allocated display list entries, or 0 if an error occurs
- * */
+ */
 d2_u32 d2_getrenderbuffersize(d2_device *handle, d2_renderbuffer *rb)
 {
 	d2_dlist *dlist;
@@ -1077,14 +1081,14 @@ d2_u32 d2_getrenderbuffersize(d2_device *handle, d2_renderbuffer *rb)
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_freedumpedbuffer(d2_device *handle, void *data)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112 */ /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERR(data, D2_INVALIDBUFFER); /* PRQA S 3112 */   /* $Misra: #DEBUG_MACRO $*/
 
 #ifndef _DEBUG
-	if (NULL != data)
+	if (data != NULL)
 #endif /* _DEBUG */
 	{
 		d2_freemem_p(data);
@@ -1094,7 +1098,7 @@ d2_s32 d2_freedumpedbuffer(d2_device *handle, void *data)
 }
 
 /*--------------------------------------------------------------------------
- * */
+ */
 d2_s32 d2_initrblayer_intern(const d2_device *handle, d2_rb_layer *layer, d2_u32 size)
 {
 	/* unused parameter */
@@ -1104,7 +1108,7 @@ d2_s32 d2_initrblayer_intern(const d2_device *handle, d2_rb_layer *layer, d2_u32
 	layer->scratch =
 		(d2_dlist_scratch_entry *)d2_getmem_p(size * sizeof(d2_dlist_scratch_entry));
 
-	if (NULL == layer->scratch) {
+	if (layer->scratch == NULL) {
 		return 0;
 	}
 
@@ -1116,7 +1120,7 @@ d2_s32 d2_initrblayer_intern(const d2_device *handle, d2_rb_layer *layer, d2_u32
 }
 
 /*--------------------------------------------------------------------------
- * */
+ */
 static d2_s32 d2_resizerblayer_intern(const d2_device *handle, d2_rb_layer *layer)
 {
 	void *newadr;
@@ -1129,7 +1133,7 @@ static d2_s32 d2_resizerblayer_intern(const d2_device *handle, d2_rb_layer *laye
 	newsize = layer->fullsize << 1;
 	newadr = d2_reallocmem_p(newsize * sizeof(d2_dlist_scratch_entry), layer->scratch, 1);
 
-	if (NULL == newadr) {
+	if (newadr == NULL) {
 		return 0;
 	}
 
@@ -1143,7 +1147,7 @@ static d2_s32 d2_resizerblayer_intern(const d2_device *handle, d2_rb_layer *laye
 }
 
 /*--------------------------------------------------------------------------
- * */
+ */
 static void d2_scratchgrowlayer_intern(d2_device *handle)
 {
 	d2_s32 inc;
@@ -1151,10 +1155,11 @@ static void d2_scratchgrowlayer_intern(d2_device *handle)
 
 	inc = d2_resizerblayer_intern(d2_dev, &d2_dev->selectedbuffer->layer[0]);
 
-	if (0 == inc) {
+	if (inc == 0) {
 		/* increasing the buffer failed. merge the existing data into
 		 * main display list as a 'best we can do' action. might destroy
-		 * order but does at least keep all primitives. */
+		 * order but does at least keep all primitives.
+		 */
 
 		d2_layer2dlist_intern(handle);
 		d2_dev->dlscratch_cnt = (d2_s32)d2_dev->selectedbuffer->layer[0].freesize;
@@ -1174,7 +1179,7 @@ static void d2_scratchgrowlayer_intern(d2_device *handle)
  *       one level of backup (no need for a stack).
  *     functions should never leave rendering in 'rendertolayer' mode
  *     when returning into application code
- * */
+ */
 void d2_rendertolayer_intern(d2_device *handle)
 {
 	d2_devicedata *d2_dev = D2_DEV(handle);
@@ -1220,7 +1225,7 @@ void d2_rendertobase_intern(d2_device *handle)
 }
 
 /*--------------------------------------------------------------------------
- * */
+ */
 void d2_layer2dlist_intern(d2_device *handle)
 {
 	d2_devicedata *d2_dev = D2_DEV(handle);
@@ -1241,7 +1246,7 @@ void d2_layer2dlist_intern(d2_device *handle)
 	targetlayer = (d2_dev->dlscratch_hook == &d2_scratchgrowlayer_intern) ? 1 : 0;
 
 	/* flush base scratch first */
-	if (0 != targetlayer) {
+	if (targetlayer != 0) {
 		d2_rendertobase_intern(handle);
 	}
 
@@ -1249,12 +1254,13 @@ void d2_layer2dlist_intern(d2_device *handle)
 	d2_rendertolayer_intern(handle);
 
 	/* copy scratch buffer to display list
-	 * use with layer as active scratch buffer */
+	 * use with layer as active scratch buffer
+	 */
 	d2_scratch2dlist_intern(handle);
 
 	d2_dev->dlscratch_cnt = (d2_s32)rblayer->fullsize;
 
-	if (0 == targetlayer) {
+	if (targetlayer == 0) {
 		d2_rendertobase_intern(handle);
 	}
 

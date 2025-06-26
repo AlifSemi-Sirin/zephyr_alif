@@ -15,14 +15,14 @@
  *
  *   Enable D/AVE2D interrupts
  */
-void d1_irq_enable();
+void d1_irq_enable(void);
 
 /*---------------------------------------------------------------------------
  *   Function: d1_irc_enable
  *
  *   Disable D/AVE2D interrupts
  */
-void d1_irq_disable();
+void d1_irq_disable(void);
 
 /*---------------------------------------------------------------------------
  *   Function: d1_irc_enable

@@ -47,7 +47,8 @@
  * There is always a *default context* that can not be freed by the application and is used for
  * everything per default.
  *
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -55,7 +56,8 @@
 #include "dave_texture.h"
 
 /*--------------------------------------------------------------------------
- * Group: Context Management */
+ * Group: Context Management
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_newcontext
@@ -71,7 +73,7 @@
  *
  * returns:
  *   context pointer or NULL in case of an error
- * */
+ */
 d2_context *d2_newcontext(d2_device *handle)
 {
 	d2_contextdata *ctx = (d2_contextdata *)d2_getmem_p(sizeof(d2_contextdata));
@@ -191,7 +193,7 @@ d2_context *d2_newcontext(d2_device *handle)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_freecontext(d2_device *handle, d2_context *ctx)
 {
 	d2_contextdata **prev;
@@ -252,7 +254,7 @@ d2_s32 d2_freecontext(d2_device *handle, d2_context *ctx)
  *
  * returns:
  *   context pointer or NULL in case of an error
- * */
+ */
 d2_context *d2_getcontext(d2_device *handle,
 			  d2_s32 mode) /* PRQA S 3673 */ /* $Misra: #NOT_CONST_IN_DEBUG_BUILD $*/
 {
@@ -282,7 +284,8 @@ d2_context *d2_getcontext(d2_device *handle,
 
 /*--------------------------------------------------------------------------
  * debug inline code to verify that a given block is a valid context
- * for the current device */
+ * for the current device
+ */
 
 #ifdef _DEBUG
 #define VERIFY_CONTEXT(c)                                                                          \
@@ -320,7 +323,7 @@ d2_context *d2_getcontext(d2_device *handle,
  *
  * see also:
  *   <d2_solidcontext>, <d2_outlinecontext>, <d2_getcontext>
- * */
+ */
 d2_s32 d2_selectcontext(d2_device *handle, d2_context *ctx)
 {
 	d2_contextdata *chain; /* required by 'VERIFY_CONTEXT' macro below */
@@ -346,7 +349,7 @@ d2_s32 d2_selectcontext(d2_device *handle, d2_context *ctx)
  *
  * see also:
  *   <d2_selectcontext>, <d2_outlinecontext>, <d2_getcontext>
- * */
+ */
 d2_s32 d2_solidcontext(d2_device *handle, d2_context *ctx)
 {
 	d2_contextdata *chain; /* required by 'VERIFY_CONTEXT' macro below */
@@ -372,7 +375,7 @@ d2_s32 d2_solidcontext(d2_device *handle, d2_context *ctx)
  *
  * see also:
  *   <d2_solidcontext>, <d2_selectcontext>, <d2_getcontext>
- * */
+ */
 d2_s32 d2_outlinecontext(d2_device *handle, d2_context *ctx)
 {
 	d2_contextdata *chain; /* required by 'VERIFY_CONTEXT' macro below */
@@ -386,7 +389,8 @@ d2_s32 d2_outlinecontext(d2_device *handle, d2_context *ctx)
 }
 
 /*--------------------------------------------------------------------------
- * Group: Context Attribute Writes */
+ * Group: Context Attribute Writes
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_setfillmode
@@ -405,10 +409,11 @@ d2_s32 d2_outlinecontext(d2_device *handle, d2_context *ctx)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setfillmode(d2_device *handle, d2_u32 mode)
 {
 	d2_contextdata *ctx;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERR((((d2_u32)mode) < 256), D2_INVALIDENUM);
 		/* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
@@ -457,7 +462,7 @@ d2_s32 d2_setfillmode(d2_device *handle, d2_u32 mode)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setcolor(d2_device *handle, d2_s32 index, d2_color color)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
@@ -479,10 +484,11 @@ d2_s32 d2_setcolor(d2_device *handle, d2_s32 index, d2_color color)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setalpha(d2_device *handle, d2_alpha alpha)
 {
 	d2_contextdata *ctx;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /*$Misra: #DEBUG_MACRO $*/
 
 	ctx = D2_DEV(handle)->ctxselected;
@@ -515,21 +521,22 @@ d2_s32 d2_setalpha(d2_device *handle, d2_alpha alpha)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setalphaex(d2_device *handle, d2_s32 index, d2_alpha alpha)
 {
 	d2_contextdata *ctx;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERRP((((d2_u32)index) < 2U), D2_INVALIDINDEX);
 		/* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 	ctx = D2_DEV(handle)->ctxselected;
 	ctx->internaldirty |= d2_dirty_material;
 
-	if (0 == index) {
+	if (index == 0) {
 		return d2_setalpha(handle, alpha);
-	} else {
-		ctx->basealpha[index] = alpha;
 	}
+
+	ctx->basealpha[index] = alpha;
 
 	D2_RETOK(handle);
 }
@@ -556,10 +563,11 @@ d2_s32 d2_setalphaex(d2_device *handle, d2_s32 index, d2_alpha alpha)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setalphamode(d2_device *handle, d2_u32 mode)
 {
 	d2_contextdata *ctx;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERR((((d2_u32)mode) < 256), D2_INVALIDENUM);
 		/* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
@@ -599,7 +607,7 @@ d2_s32 d2_setalphamode(d2_device *handle, d2_u32 mode)
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
  *
- * */
+ */
 d2_s32 d2_setalphagradient(d2_device *handle, d2_s32 index, d2_point x, d2_point y, d2_point dx,
 			   d2_point dy)
 {
@@ -610,12 +618,12 @@ d2_s32 d2_setalphagradient(d2_device *handle, d2_s32 index, d2_point x, d2_point
 	D2_CHECKERR((((d2_u32)index) < 2U), D2_INVALIDINDEX);
 		/* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 	/* D2_CHECKERR( ((dx > D2_EPSILON) || (dx < -D2_EPSILON)), D2_VALUETOOSMALL );
-	 * D2_CHECKERR( ((dy > D2_EPSILON) || (dy < -D2_EPSILON)), D2_VALUETOOSMALL ); */
+	 * D2_CHECKERR( ((dy > D2_EPSILON) || (dy < -D2_EPSILON)), D2_VALUETOOSMALL );
+	 */
 	index += 2;
 
 	/* calc limiter values */
-	if (0 != (dx | dy)) /* PRQA S 3344, 4130 */ /*$Misra: #PERF_LOGICOP $*/
-	{
+	if (0 != (dx | dy)) { /* PRQA S 3344, 4130 */ /*$Misra: #PERF_LOGICOP $*/
 		/* using 64bit division to avoid fixedpoint overflow */
 #ifdef _NO_LL_
 		d2_int64 tmp, tmp2;
@@ -689,7 +697,7 @@ d2_s32 d2_setalphagradient(d2_device *handle, d2_s32 index, d2_point x, d2_point
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setblendmode(d2_device *handle, d2_u32 srcfactor, d2_u32 dstfactor)
 {
 	d2_contextdata *ctx;
@@ -792,7 +800,7 @@ d2_s32 d2_setblendmode(d2_device *handle, d2_u32 srcfactor, d2_u32 dstfactor)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setalphablendmode(d2_device *handle, d2_u32 srcfactor, d2_u32 dstfactor)
 {
 	d2_contextdata *ctx;
@@ -922,7 +930,7 @@ d2_s32 d2_setalphablendmode(d2_device *handle, d2_u32 srcfactor, d2_u32 dstfacto
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setalphablendmodeex(d2_device *handle, d2_u32 srcfactor, d2_u32 dstfactor,
 			      d2_u32 blendflags)
 {
@@ -963,7 +971,7 @@ d2_s32 d2_setalphablendmodeex(d2_device *handle, d2_u32 srcfactor, d2_u32 dstfac
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setantialiasing(d2_device *handle, d2_s32 enable)
 {
 	d2_contextdata *ctx;
@@ -972,7 +980,7 @@ d2_s32 d2_setantialiasing(d2_device *handle, d2_s32 enable)
 
 	ctx = D2_DEV(handle)->ctxselected;
 
-	if (0 != enable) {
+	if (enable != 0) {
 		ctx->features |= (d2_u8)d2_feat_aa;
 		ctx->thresholdmask = 0;
 	} else {
@@ -1012,7 +1020,7 @@ d2_s32 d2_setantialiasing(d2_device *handle, d2_s32 enable)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setblur(d2_device *handle, d2_width blur)
 {
 	d2_contextdata *ctx;
@@ -1059,10 +1067,11 @@ d2_s32 d2_setblur(d2_device *handle, d2_width blur)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setlinecap(d2_device *handle, d2_u32 mode)
 {
 	d2_contextdata *ctx;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERR((mode < d2_lc_max), D2_INVALIDENUM);
 		/* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
@@ -1097,10 +1106,11 @@ d2_s32 d2_setlinecap(d2_device *handle, d2_u32 mode)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setlinejoin(d2_device *handle, d2_u32 mode)
 {
 	d2_contextdata *ctx;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERR((mode < d2_lj_max), D2_INVALIDENUM);
 		/* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
@@ -1125,10 +1135,11 @@ d2_s32 d2_setlinejoin(d2_device *handle, d2_u32 mode)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setmiterlimit(d2_device *handle, d2_width miter)
 {
 	d2_contextdata *ctx;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ctx = D2_DEV(handle)->ctxselected;
@@ -1160,11 +1171,12 @@ d2_s32 d2_setmiterlimit(d2_device *handle, d2_width miter)
  *   and color2 is green, the bitstring is 0101 1001. For the upper line filtering is off, the
  *   lower line is rendered with filtering enabled (flag: d2_pm_filter).
  *   (see pattern.png)
- * */
+ */
 d2_s32 d2_setpattern(d2_device *handle, d2_pattern pattern)
 {
 	d2_contextdata *ctx;
 	d2_s32 i, patLen, maxPatLen;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ctx = D2_DEV(handle)->ctxselected;
@@ -1174,7 +1186,8 @@ d2_s32 d2_setpattern(d2_device *handle, d2_pattern pattern)
 	maxPatLen = ctx->device->maxpatlen;
 	patLen = ctx->patlen;
 	/* mask invalid bits in pattern
-	 * pattern &= ((2 << (patlen-1))-1);  (warning: would break 'eye' demo) */
+	 * pattern &= ((2 << (patlen-1))-1);  (warning: would break 'eye' demo)
+	 */
 
 	/* extend it to fill entire hardware word */
 	for (i = 0; i < (maxPatLen / patLen); i++) {
@@ -1203,7 +1216,7 @@ d2_s32 d2_setpattern(d2_device *handle, d2_pattern pattern)
  *
  * see also:
  *   <d2_setcolor>, <d2_setpattern>
- * */
+ */
 d2_s32 d2_setpatternalpha(d2_device *handle, d2_s32 index, d2_alpha alpha)
 {
 	d2_contextdata *ctx;
@@ -1243,7 +1256,7 @@ d2_s32 d2_setpatternalpha(d2_device *handle, d2_s32 index, d2_alpha alpha)
  *
  * see also:
  *   <d2_setpatternsize>, <d2_setpattern>, <d2_setpatternmode>
- * */
+ */
 d2_s32 d2_setpatternparam(d2_device *handle, d2_point x, d2_point y, d2_width dx, d2_width dy)
 {
 	d2_contextdata *ctx;
@@ -1257,8 +1270,7 @@ d2_s32 d2_setpatternparam(d2_device *handle, d2_point x, d2_point y, d2_width dx
 
 	grad = &ctx->patulim[0];
 	/* calc limiter values */
-	if (0 != (dx | dy)) /* PRQA S 3344, 4130 */ /* $Misra: #PERF_LOGICOP $*/
-	{
+	if (0 != (dx | dy)) { /* PRQA S 3344, 4130 */ /* $Misra: #PERF_LOGICOP $*/
 		/* using 64bit division to avoid fixedpoint overflow */
 		d2_s32 idx = dx;
 		d2_s32 idy = dy;
@@ -1322,10 +1334,11 @@ d2_s32 d2_setpatternparam(d2_device *handle, d2_point x, d2_point y, d2_width dx
  *
  * see also:
  *   <d2_setpatternmode>, <d2_setpatternparam>
- * */
+ */
 d2_s32 d2_setlinepattern(d2_device *handle, d2_width scale, d2_s32 offset)
 {
 	d2_contextdata *ctx;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ctx = D2_DEV(handle)->ctxselected;
@@ -1361,7 +1374,7 @@ d2_s32 d2_setlinepattern(d2_device *handle, d2_width scale, d2_s32 offset)
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setpatternmode(d2_device *handle, d2_u32 mode)
 {
 	d2_contextdata *ctx;
@@ -1411,7 +1424,7 @@ d2_s32 d2_setpatternmode(d2_device *handle, d2_u32 mode)
  * please note:
  *   when using small pattern size (<8) all leading unused bits in the pattern mask (see:
  * <d2_setpattern>) must be zero!
- * */
+ */
 d2_s32 d2_setpatternsize(d2_device *handle, d2_s32 size)
 {
 	d2_contextdata *ctx;
@@ -1468,23 +1481,21 @@ d2_s32 d2_setpatternsize(d2_device *handle, d2_s32 size)
  *
  * see also:
  *  <d2_setalphagradient>
- * */
+ */
 d2_s32 d2_setclipgradient(d2_device *handle, d2_s32 index, d2_point x, d2_point y, d2_s32 nx,
 			  d2_s32 ny, d2_u32 flags)
 {
 	d2_gradientdata *grad;
 
-	if (NULL != handle) {
+	if (handle != NULL) {
 		/*D2_VALIDATE( handle, D2_INVALIDDEVICE );*/ /* PRQA S 3112, 4130 */ /* $Misra:
-											#DEBUG_MACRO
-											$*/
+											#DEBUG_MACRO $*/
 		D2_CHECKERR((((d2_u32)index) < 4U), D2_INVALIDINDEX);
 			/* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 		/* get access */
 		grad = &D2_DEV(handle)->ctxselected->gradient[index];
-		if (0 == (nx | ny)) /* PRQA S 3344, 4130 */ /* $Misra: #PERF_LOGICOP $*/
-		{
+		if (0 == (nx | ny)) { /* PRQA S 3344, 4130 */ /* $Misra: #PERF_LOGICOP $*/
 			/* disable clip plane */
 			D2_DEV(handle)->ctxselected->gradients &= (d2_u8)~BIT(index);
 		} else {
@@ -1521,7 +1532,7 @@ d2_s32 d2_setclipgradient(d2_device *handle, d2_s32 index, d2_point x, d2_point 
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
  *
- * */
+ */
 d2_s32 d2_setcircleextend(d2_device *handle, d2_width offset)
 {
 	d2_contextdata *ctx;
@@ -1539,7 +1550,7 @@ d2_s32 d2_setcircleextend(d2_device *handle, d2_width offset)
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 void d2_calcpatternalpha_intern(d2_contextdata *ctx)
 {
 	d2_u32 patAlpha;
@@ -1552,7 +1563,8 @@ void d2_calcpatternalpha_intern(d2_contextdata *ctx)
 }
 
 /*--------------------------------------------------------------------------
- * Group: Context Attribute Queries */
+ * Group: Context Attribute Queries
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_getfillmode
@@ -1569,10 +1581,11 @@ void d2_calcpatternalpha_intern(d2_contextdata *ctx)
  *
  * see also:
  *  <d2_setfillmode>
- * */
+ */
 d2_u8 d2_getfillmode(d2_device *handle)
 {
 	d2_u8 ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ret = D2_DEV(handle)->ctxselected->fillmode;
@@ -1595,10 +1608,11 @@ d2_u8 d2_getfillmode(d2_device *handle)
  *
  * see also:
  *   <d2_setcolor>
- * */
+ */
 d2_color d2_getcolor(d2_device *handle, d2_s32 index)
 {
 	d2_color ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERRP((((d2_u32)index) < 2U), D2_INVALIDINDEX);
 		/* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
@@ -1622,10 +1636,11 @@ d2_color d2_getcolor(d2_device *handle, d2_s32 index)
  *
  * see also:
  *   <d2_setalpha>
- * */
+ */
 d2_alpha d2_getalpha(d2_device *handle)
 {
 	d2_alpha ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ret = D2_DEV(handle)->ctxselected->basealpha[0];
@@ -1648,10 +1663,11 @@ d2_alpha d2_getalpha(d2_device *handle)
  *
  * see also:
  *   <d2_setalphaex>
- * */
+ */
 d2_alpha d2_getalphaex(d2_device *handle, d2_s32 index)
 {
 	d2_alpha ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERRP((((d2_u32)index) < 2U), D2_INVALIDINDEX);
 		/* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
@@ -1677,10 +1693,11 @@ d2_alpha d2_getalphaex(d2_device *handle, d2_s32 index)
  *
  * see also:
  *  <d2_setalphamode>
- * */
+ */
 d2_u8 d2_getalphamode(d2_device *handle)
 {
 	d2_u8 ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ret = D2_DEV(handle)->ctxselected->alphamode;
@@ -1704,11 +1721,12 @@ d2_u8 d2_getalphamode(d2_device *handle)
  *
  * see also:
  *   <d2_getblendmodedst>, <d2_setblendmode>
- * */
+ */
 d2_u32 d2_getblendmodesrc(d2_device *handle)
 {
 	d2_u32 ret;
 	d2_u32 blendMask;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	/* retrieve blendunit bits */
@@ -1754,11 +1772,12 @@ d2_u32 d2_getblendmodesrc(d2_device *handle)
  *
  * see also:
  *   <d2_getblendmodesrc>, <d2_setblendmode>
- * */
+ */
 d2_u32 d2_getblendmodedst(d2_device *handle)
 {
 	d2_u32 ret;
 	d2_u32 blendMask;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	/* retrieve blendunit bits */
@@ -1803,11 +1822,12 @@ d2_u32 d2_getblendmodedst(d2_device *handle)
  *
  * see also:
  *   <d2_getalphablendmodedst>, <d2_setalphablendmode>
- * */
+ */
 d2_u32 d2_getalphablendmodesrc(d2_device *handle)
 {
 	d2_u32 ret;
 	d2_u32 blendMask;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	if (0 == (D2_DEV(handle)->hwrevision & D2FB_ALPHACHANNELBLENDING)) {
@@ -1862,11 +1882,12 @@ d2_u32 d2_getalphablendmodesrc(d2_device *handle)
  *
  * see also:
  *   <d2_getblendmodesrc>, <d2_setalphablendmode>
- * */
+ */
 d2_u32 d2_getalphablendmodedst(d2_device *handle)
 {
 	d2_u32 ret;
 	d2_u32 blendMask;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	if (0 == (D2_DEV(handle)->hwrevision & D2FB_ALPHACHANNELBLENDING)) {
@@ -1922,10 +1943,11 @@ d2_u32 d2_getalphablendmodedst(d2_device *handle)
  *
  * see also:
  *  <d2_setalphablendmodeex>
- * */
+ */
 d2_u8 d2_getalphablendmodeflags(d2_device *handle)
 {
 	d2_u8 ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ret = D2_DEV(handle)->ctxselected->alphablendflags;
@@ -1947,10 +1969,11 @@ d2_u8 d2_getalphablendmodeflags(d2_device *handle)
  *
  * see also:
  *  <d2_setantialiasing>
- * */
+ */
 d2_s32 d2_getantialiasing(d2_device *handle)
 {
 	d2_s32 ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /*$Misra: #DEBUG_MACRO $*/
 
 	if (0 != (D2_DEV(handle)->ctxselected->features & d2_feat_aa)) {
@@ -1976,10 +1999,11 @@ d2_s32 d2_getantialiasing(d2_device *handle)
  *
  * see also:
  *   <d2_setblur>
- * */
+ */
 d2_width d2_getblur(d2_device *handle)
 {
 	d2_width ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ret = D2_DEV(handle)->ctxselected->blurring;
@@ -2003,10 +2027,11 @@ d2_width d2_getblur(d2_device *handle)
  *
  * see also:
  *  <d2_setlinecap>
- * */
+ */
 d2_u8 d2_getlinecap(d2_device *handle)
 {
 	d2_u8 ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ret = D2_DEV(handle)->ctxselected->linecap;
@@ -2030,10 +2055,11 @@ d2_u8 d2_getlinecap(d2_device *handle)
  *
  * see also:
  *  <d2_setlinejoin>
- * */
+ */
 d2_u8 d2_getlinejoin(d2_device *handle)
 {
 	d2_u8 ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ret = D2_DEV(handle)->ctxselected->linejoin;
@@ -2055,10 +2081,11 @@ d2_u8 d2_getlinejoin(d2_device *handle)
  *
  * see also:
  *  <d2_setpattern>
- * */
+ */
 d2_pattern d2_getpattern(d2_device *handle)
 {
 	d2_pattern ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ret = (d2_pattern)D2_DEV(handle)->ctxselected->orgpattern;
@@ -2080,7 +2107,7 @@ d2_pattern d2_getpattern(d2_device *handle)
  *
  * see also:
  *  <d2_setpatternmode>
- * */
+ */
 d2_u32 d2_getpatternmode(d2_device *handle)
 {
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
@@ -2102,7 +2129,7 @@ d2_u32 d2_getpatternmode(d2_device *handle)
  *
  * see also:
  *  <d2_setpatternsize>
- * */
+ */
 d2_s32 d2_getpatternsize(d2_device *handle)
 {
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
@@ -2125,10 +2152,11 @@ d2_s32 d2_getpatternsize(d2_device *handle)
  *
  * see also:
  *  <d2_setpatternalpha>
- * */
+ */
 d2_alpha d2_getpatternalpha(d2_device *handle, d2_s32 index)
 {
 	d2_alpha ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERRP((((d2_u32)index) < 2U), D2_INVALIDINDEX);
 		/* PRQA S 3112, 4130 */ /* $Misra: #DEBUG_MACRO $*/

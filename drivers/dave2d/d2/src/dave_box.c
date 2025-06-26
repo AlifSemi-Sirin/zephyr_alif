@@ -14,7 +14,8 @@
  *  2012-09-25 BSp  MISRA cleanup
  *  2013-03-15 MRe  fix d2_clear: insert dlist waits
  *  2017-07-27 HFu  clearly commented and renamed d2_insertwait...dlist_intern functions
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -27,11 +28,11 @@
 
 /*--------------------------------------------------------------------------*/
 
-static void d2_clearbox_intern(d2_devicedata *handle, const d2_contextdata *ctx, d2_color clearcol);
+static void d2_clearbox_intern(d2_devicedata * handle, const d2_contextdata * ctx, d2_color clearcol);
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderbox_inline(d2_devicedata *handle, d2_contextdata *ctx, d2_point x1, d2_point y1,
 			   d2_width w, d2_width h)
 {
@@ -105,8 +106,8 @@ d2_s32 d2_renderbox_inline(d2_devicedata *handle, d2_contextdata *ctx, d2_point 
 							  D2C_LIM4ENABLE);
 	} else {
 		/* choose optimal limiter count */
-		if (0 == xas) {
-			if (0 == yas) {
+		if (xas == 0) {
+			if (yas == 0) {
 				/* no subpixel positioning */
 
 				control = d2_initgradients_intern(handle, ctx, &bbox, 0, 0);
@@ -130,7 +131,7 @@ d2_s32 d2_renderbox_inline(d2_devicedata *handle, d2_contextdata *ctx, d2_point 
 								  D2C_LIM1ENABLE | D2C_LIM2ENABLE);
 			}
 		} else {
-			if (0 == yas) {
+			if (yas == 0) {
 				/* xaxis subpixel only */
 				D2_DLISTWRITES(D2_L1START,
 					       (d2_s32)(((((d2_u32)(bbox.xmin - x1)) << (16 - 4)) +
@@ -200,7 +201,7 @@ d2_s32 d2_renderbox_inline(d2_devicedata *handle, d2_contextdata *ctx, d2_point 
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static void d2_clearbox_intern(d2_devicedata *handle, const d2_contextdata *ctx, d2_color clearcol)
 {
 	d2_bbox bbox;
@@ -229,8 +230,7 @@ static void d2_clearbox_intern(d2_devicedata *handle, const d2_contextdata *ctx,
 	    /* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 	    (D2_INT4(bbox.xmax) ==
 	     (d2_s32)(handle->fbwidth -
-		      1))) /* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
-	{
+		      1))) { /* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 		d2_color dblcolor;
 		d2_s32 w, h;
 
@@ -341,7 +341,7 @@ static void d2_clearbox_intern(d2_devicedata *handle, const d2_contextdata *ctx,
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderbox_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point x1, d2_point y1,
 			   d2_width w, d2_width h)
 {
@@ -350,7 +350,7 @@ d2_s32 d2_renderbox_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point 
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderbox_solid(d2_device *handle, d2_point x1, d2_point y1, d2_width w, d2_width h)
 {
 	(void)d2_renderbox_inline(D2_DEV(handle), D2_DEV(handle)->ctxsolid, x1, y1, w, h);
@@ -360,7 +360,7 @@ d2_s32 d2_renderbox_solid(d2_device *handle, d2_point x1, d2_point y1, d2_width 
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderbox_shadow(d2_device *handle, d2_point x1, d2_point y1, d2_width w, d2_width h)
 {
 	(void)d2_renderbox_inline(D2_DEV(handle), D2_DEV(handle)->ctxoutline,
@@ -372,7 +372,7 @@ d2_s32 d2_renderbox_shadow(d2_device *handle, d2_point x1, d2_point y1, d2_width
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderbox_outline(d2_device *handle, d2_point x1, d2_point y1, d2_width w, d2_width h)
 {
 	d2_width wo = D2_DEV(handle)->outlinewidth;
@@ -420,7 +420,7 @@ d2_s32 d2_renderbox_outline(d2_device *handle, d2_point x1, d2_point y1, d2_widt
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderbox_solidoutline(d2_device *handle, d2_point x1, d2_point y1, d2_width w,
 				 d2_width h)
 {
@@ -439,7 +439,7 @@ d2_s32 d2_renderbox_solidoutline(d2_device *handle, d2_point x1, d2_point y1, d2
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderbox_solidshadow(d2_device *handle, d2_point x1, d2_point y1, d2_width w, d2_width h)
 {
 	/* render shadow */
@@ -457,7 +457,7 @@ d2_s32 d2_renderbox_solidshadow(d2_device *handle, d2_point x1, d2_point y1, d2_
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_clearbox_solid(d2_device *handle, d2_color clearcolor)
 {
 	d2_clearbox_intern(D2_DEV(handle), D2_DEV(handle)->ctxsolid, clearcolor);

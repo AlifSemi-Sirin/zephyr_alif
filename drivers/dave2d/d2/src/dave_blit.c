@@ -48,7 +48,8 @@
  * Please not that the texel-to-pixel mapping implementation has changed
  * for the magnification case since D2 Driver version 3.10.
  *
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -58,7 +59,7 @@
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 
 #define D2_CHECKERR_BLITWIDTH(x)                                                                   \
 	D2_CHECKERR((x) <= (1024 * 2), D2_INVALIDWIDTH)                                            \
@@ -74,7 +75,8 @@
 	/* PRQA S 4130, 3112, 3453 */ /* $Misra: #DEBUG_MACRO $*/
 
 /*--------------------------------------------------------------------------
- * Group: BLIT Attributes Writes */
+ * Group: BLIT Attributes Writes
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_setblitsrc
@@ -135,12 +137,13 @@
  *   Please notice that a cache flush using 'd1_cacheblockflush' might be necessary if memory
  * contents were changed before! To avoid problems you can use the d1 driver memory management
  * functions 'd1_copytovidmem' or 'd1_copyfromvidmem', which implicitly do a cache flush.
- * */
+ */
 d2_s32 d2_setblitsrc(d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, d2_s32 height,
 		     d2_u32 format)
 {
 	d2_contextdata *ctx;
 	d2_u32 format_noflags = format & ~d2_mode_rle & ~d2_mode_clut;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERR(ptr, D2_NOVIDEOMEM); /* PRQA S 4130, 3112 */       /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERR_BLITPITCH(pitch); /* PRQA S 4130, 3112 */          /* $Misra: #DEBUG_MACRO $*/
@@ -175,7 +178,8 @@ d2_s32 d2_setblitsrc(d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, d
 }
 
 /*--------------------------------------------------------------------------
- * Group: BLIT Rendering Functions */
+ * Group: BLIT Rendering Functions
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_blitcopy
@@ -253,7 +257,7 @@ d2_s32 d2_setblitsrc(d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, d
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_blitcopy(d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_blitpos srcx,
 		   d2_blitpos srcy, d2_width dstwidth, d2_width dstheight, d2_point dstx,
 		   d2_point dsty, d2_u32 flags)
@@ -272,7 +276,7 @@ d2_s32 d2_blitcopy(d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_blit
 	d2_s32 i;
 #else
 	/* backup data for context content used by blit */
-	d2_contextdata_backup *backup_context = D2_DEV(handle)->blitcontext_b;
+	d2_contextdata_backup * backup_context = D2_DEV(handle)->blitcontext_b;
 	/* if d2_bf_no_blitctxbackup minimal backup on stack */
 	d2_u32 fillmode_b = 0;
 #endif
@@ -287,8 +291,7 @@ d2_s32 d2_blitcopy(d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_blit
 	D2_VALIDATE(((d2_u32)dstwidth > 0) && ((d2_u32)dstwidth <= D2_FIX4(1024 * 2)),
 		    D2_INVALIDWIDTH);
 		/* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/ /* PRQA S 3355 */ /* $Misra:
-											 #MISRA_BUG_LOGIC_COMP_TRUE_3355
-											 $*/
+											 #MISRA_BUG_LOGIC_COMP_TRUE_3355 $*/
 	D2_VALIDATE(srcheight > 0, D2_INVALIDHEIGHT);
 		/* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 	D2_VALIDATE((dstheight > 0) && (dstheight <= D2_FIX4(1024)), D2_INVALIDHEIGHT);
@@ -304,13 +307,13 @@ d2_s32 d2_blitcopy(d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_blit
 
 	/* check if pitch > 11bits */
 	/* pitch goes to fractional part of v limiter -> will not be used if srcheight is multiple
-	 * of dstheight */
+	 * of dstheight
+	 */
 	D2_VALIDATE((ctx->blit_pitch < (1024 * 2)) ||
 			    ((ctx->blit_pitch >= (1024 * 2)) && (D2_FIX4(srcheight) >= dstheight)),
 		    D2_INVALIDHEIGHT);
 		/* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/ /* PRQA S 4131 */ /* $Misra:
-											 #PERF_ARITHMETIC_SHIFT_LEFT
-											 $*/
+											 #PERF_ARITHMETIC_SHIFT_LEFT $*/
 
 	/* check max value for ymask (21bit) */
 	D2_VALIDATE(((srcheight - 1) * ctx->blit_pitch) < (2048 * 1024), D2_INVALIDHEIGHT);
@@ -339,7 +342,8 @@ d2_s32 d2_blitcopy(d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_blit
 	}
 
 	/* check: wrapping will only work with rectangle dimensions that are integer powers of two
-	 * only */
+	 * only
+	 */
 	D2_VALIDATE(!((0 != (d2_tm_wrapu & flags)) &&
 		      (0 != ((d2_u32)texWidth & ((d2_u32)texWidth - 1)))),
 		    D2_INVALIDWIDTH);
@@ -379,7 +383,7 @@ d2_s32 d2_blitcopy(d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_blit
 
 	/* copy gradient data if necessary */
 	blitcontext->gradients = ctx->gradients;
-	if (0 != blitcontext->gradients) {
+	if (blitcontext->gradients != 0) {
 		for (i = 0; i < 4; i++) {
 			blitcontext->gradient[i] = ctx->gradient[i];
 		}

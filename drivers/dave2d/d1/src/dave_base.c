@@ -55,19 +55,19 @@ static const char g_versionid[] = "V" D1_VERSION_STRING;
 static const struct device *const clock_ctrl = DEVICE_DT_GET(DT_NODELABEL(clock));
 
 /*--------------------------------------------------------------------------*/
-const char *d1_getversionstring()
+const char *d1_getversionstring(void)
 {
 	return g_versionid;
 }
 
 /*--------------------------------------------------------------------------*/
-int d1_getversion()
+int d1_getversion(void)
 {
 	return D1_VERSION;
 }
 
 /*--------------------------------------------------------------------------*/
-static void d1_clock_enable()
+static void d1_clock_enable(void)
 {
 	if (!device_is_ready(clock_ctrl)) {
 		return;
@@ -77,7 +77,7 @@ static void d1_clock_enable()
 }
 
 /*--------------------------------------------------------------------------*/
-static void d1_clock_disable()
+static void d1_clock_disable(void)
 {
 	if (!device_is_ready(clock_ctrl)) {
 		return;
@@ -90,6 +90,7 @@ static void d1_clock_disable()
 d1_device *d1_opendevice(long flags)
 {
 	d1_device *handle = d1_allocmem(sizeof(d1_device_intern));
+
 	if (handle == NULL) {
 		return NULL;
 	}
@@ -173,6 +174,7 @@ void d1_setregister(d1_device *handle, int deviceid, int index, long value)
 #ifdef CONFIG_D1_DLIST_INDIRECT
 		if (index == D2_DLISTSTART && D1_DEV(handle)->dlist_indirect) {
 			long *dlist_ptr = (long *)value;
+
 			D1_DEV(handle)->dlist_start = dlist_ptr + 1;
 			D1_REG(index) = *dlist_ptr;
 		} else {

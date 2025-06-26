@@ -23,14 +23,15 @@
  *                    multithreading
  *  2011-02-07 SSt  - moved instance management for multithreading to d1 driver
  *  2012-09-25 BSp  - MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
 #include "dave_render.h"
 
 /*--------------------------------------------------------------------------
- * */
+ */
 d1_device *d2hw_acquire(d2_device *handle, d2_u32 flags)
 {
 	d1_device *d1handle;
@@ -61,7 +62,7 @@ d1_device *d2hw_acquire(d2_device *handle, d2_u32 flags)
 }
 
 /*--------------------------------------------------------------------------
- * */
+ */
 d2_s32 d2hw_release(d1_device *hwid)
 {
 	if (1 == d1_closedevice(hwid)) {
@@ -72,21 +73,21 @@ d2_s32 d2hw_release(d1_device *hwid)
 }
 
 /*--------------------------------------------------------------------------
- * */
+ */
 void d2hw_set(d1_device *hwid, d2_u32 index, d2_s32 value)
 {
 	d1_setregister(hwid, D1_DAVE2D, (d2_s32)index, value);
 }
 
 /*--------------------------------------------------------------------------
- * */
+ */
 d2_s32 d2hw_get(d1_device *hwid, d2_u32 index)
 {
 	return d1_getregister(hwid, D1_DAVE2D, (d2_s32)index);
 }
 
 /*--------------------------------------------------------------------------
- * */
+ */
 void d2hw_wait(d1_device *hwid)
 {
 	/* wait for enum ready state */
@@ -96,7 +97,7 @@ void d2hw_wait(d1_device *hwid)
 
 /*---------------------------------------------------------------------------
  * return only after all rendering has finished
- * */
+ */
 void d2hw_finish(const d2_device *handle)
 {
 	d1_device *hwId = (d1_device *)D2_DEV(handle)->hwid;
@@ -113,7 +114,8 @@ void d2hw_finish(const d2_device *handle)
 			if (0 == (D2_DEV(handle)->flags & d2_df_no_irq)) {
 				/* don't wait forever in case another driver instance is scheduled
 				 * between the register check and the wait for the irq and takes the
-				 * event */
+				 * event
+				 */
 				(void)d1_queryirq(hwId, d1_irq_dlist, 200);
 			}
 		}
@@ -122,7 +124,7 @@ void d2hw_finish(const d2_device *handle)
 
 /*---------------------------------------------------------------------------
  * start rendering primitives
- * */
+ */
 void d2hw_start(d2_device *handle, const d2_dlist *dlist, d2_s32 startnoblk)
 {
 	d2_devicedata *dev = D2_DEV(handle);
@@ -135,11 +137,11 @@ void d2hw_start(d2_device *handle, const d2_dlist *dlist, d2_s32 startnoblk)
 
 		/* note that no video memory has been allocated to store dlists */
 
-		if (0 != startnoblk) {
+		if (startnoblk != 0) {
 			/* we come from d2_executedlist */
 			(void)d2_executedlist_intern(handle, (d2_dlist_entry *)*dlist_list);
 		} else {
-			while (NULL != blk) {
+			while (blk != NULL) {
 				d2_dlist_entry *pos = blk->block;
 
 				if (3 == d2_executedlist_intern(handle, pos)) {

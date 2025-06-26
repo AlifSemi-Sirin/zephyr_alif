@@ -13,7 +13,8 @@
  *  2006-11-07 CSe  allocate memory through new d0_ functions
  *  2008-01-14 ASc  changed comments from C++ to C, removed tabs
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -22,7 +23,7 @@
 
 /*--------------------------------------------------------------------------
  * get memory from current process heap
- * */
+ */
 void *d2_getmem_p(d2_u32 size)
 {
 	return d1_allocmem(size);
@@ -30,7 +31,7 @@ void *d2_getmem_p(d2_u32 size)
 
 /*--------------------------------------------------------------------------
  * free memory from current process heap
- * */
+ */
 void d2_freemem_p(void *adr)
 {
 	d1_freemem(adr);
@@ -40,21 +41,21 @@ void d2_freemem_p(void *adr)
  * resize memory from current process heap
  *
  * keep - set to 0 if it is not necessary to keep the original data
- * */
+ */
 void *d2_reallocmem_p(d2_u32 newsize, void *oldadr, d2_s32 keep)
 {
 	void *newadr;
 	d2_u32 oldsize;
 
 	/* newsize 0 implies just a free */
-	if (0 == newsize) {
+	if (newsize == 0) {
 		d2_freemem_p(oldadr);
 		return (void *)0;
 	}
 
 	/* query old blocksize */
 	oldsize = d1_memsize(oldadr);
-	if (0 == oldsize) {
+	if (oldsize == 0) {
 		return (void *)0;
 	}
 
@@ -64,12 +65,12 @@ void *d2_reallocmem_p(d2_u32 newsize, void *oldadr, d2_s32 keep)
 	}
 
 	newadr = d2_getmem_p(newsize);
-	if (NULL == newadr) {
+	if (newadr == NULL) {
 		return newadr;
 	}
 
 	/* copy content as ints if possible */
-	if (0 != keep) {
+	if (keep != 0) {
 		d2_u32 i;
 		d2_s32 *src = (d2_s32 *)oldadr;
 		d2_s32 *dst = (d2_s32 *)newadr;
@@ -84,6 +85,7 @@ void *d2_reallocmem_p(d2_u32 newsize, void *oldadr, d2_s32 keep)
 			/* copy not 'int aligned' part */
 			d2_s8 *srcc = (d2_s8 *)src;
 			d2_s8 *dstc = (d2_s8 *)dst;
+
 			for (i = 0; i < (oldsize & (sizeof(d2_s32) - 1)); i++) {
 				*dstc = *srcc;
 				dstc++;
@@ -100,7 +102,7 @@ void *d2_reallocmem_p(d2_u32 newsize, void *oldadr, d2_s32 keep)
 
 /*--------------------------------------------------------------------------
  * get memory from display list heap
- * */
+ */
 void *d2_getmem_d(const d2_device *handle, d2_u32 size)
 {
 	d1_device *id = d2_level1interface(handle);
@@ -118,7 +120,7 @@ void *d2_getmem_d(const d2_device *handle, d2_u32 size)
 
 /*--------------------------------------------------------------------------
  * free memory from display list heap
- * */
+ */
 void d2_freemem_d(const d2_device *handle, void *adr)
 {
 	d1_device *id = d2_level1interface(handle);

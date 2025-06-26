@@ -11,7 +11,8 @@
  *  2008-10-02 MRe  fix of blurred circles
  *  2008-11-24 AJ   modify code to support IAR compiler. (no 64bit support)
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -33,7 +34,7 @@ void d2_circlesetup_intern(d2_devicedata *handle, const d2_contextdata *ctx, d2_
 	yr = (d2_point)(y - r);
 
 	if (0 != (ctx->features & d2_feat_blur)) {
-		if ((0 == hiprec) ||
+		if ((hiprec == 0) ||
 		    (0 == (D2_DEV(handle)->hwrevision & D2FB_HILIMITERPRECISION))) {
 			d2_int64 f64, ir64;
 #ifdef _NO_LL_
@@ -127,8 +128,7 @@ void d2_circlesetup_intern(d2_devicedata *handle, const d2_contextdata *ctx, d2_
 
 	} else {
 		/* not blurred case (b == 1 && ib == 1) */
-		if (0 == (xr | yr)) /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
-		{
+		if (0 == (xr | yr)) { /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
 			/* integer aligned, nonclipped case (xr == 0 && yr == 0) */
 			ir = (((-1 * D2_FIX16(1)) * (D2_FIX4(1) / 2))) / r;
 			f = (-r) * (1 << (16 - 4 - 1));
@@ -159,9 +159,10 @@ void d2_circlesetup_intern(d2_devicedata *handle, const d2_contextdata *ctx, d2_
 											 fails */
 
 			/*if(ft != ftXXX)
-			{
-			   int i = 42;
-			}*/
+			 * {
+			 *    int i = 42;
+			 * }
+			 */
 
 			f = (d2_s32)ft - (((r / 2) + (xr + yr)) * (1 << (16 - 4)));
 #else
@@ -177,7 +178,7 @@ void d2_circlesetup_intern(d2_devicedata *handle, const d2_contextdata *ctx, d2_
 	}
 
 	/* set register values (geometric parameters) */
-	if (0 == invert) {
+	if (invert == 0) {
 		D2_DLISTWRITES(D2_L1START + index, f + band);
 		D2_DLISTWRITES(D2_L2START + index, a); /* equal l1_xadd */
 		D2_DLISTWRITES(D2_L1YADD + index, b);

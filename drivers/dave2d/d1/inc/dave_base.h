@@ -44,7 +44,8 @@
  *
  * Hardware dependent  D/AVE 2D low level driver
  *
- *---------------------------------------------------------------------*/
+ *---------------------------------------------------------------------
+ */
 
 #ifndef __1_dave_base_h_H
 #define __1_dave_base_h_H
@@ -124,7 +125,7 @@ enum d1_buttons {
 typedef void d1_device;
 #endif
 
-typedef void(D1_STDCALL *d1_interrupt)(int irqtype, void *irqdata, void *usrdata);
+typedef void(D1_STDCALL * d1_interrupt)(int irqtype, void *irqdata, void *usrdata);
 
 /*---------------------------------------------------------------------------*/
 
@@ -361,8 +362,10 @@ typedef struct _d1_layercaps {
  */
 typedef struct _d1_displaycaps {
 	unsigned int modecount;
+
 	const d1_videomode *videomodes;
 	unsigned int layercount;
+
 	const d1_layercaps *layercaps;
 	int major_rev;
 	int minor_rev;
@@ -394,7 +397,7 @@ typedef struct _d1_displaycaps {
  *  See also:
  *    <d1_getversionstring>
  */
-extern int d1_getversion();
+extern int d1_getversion(void);
 
 /*---------------------------------------------------------------------------
  *  Function: d1_getversionstring
@@ -411,7 +414,7 @@ extern int d1_getversion();
  *    <d1_getversion>
  *
  */
-extern const char *d1_getversionstring();
+extern const char *d1_getversionstring(void);
 
 /*---------------------------------------------------------------------------
  *  Function: d1_opendevice

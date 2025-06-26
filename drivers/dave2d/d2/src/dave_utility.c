@@ -20,7 +20,8 @@
  * Title: Utility Functions
  * Triangle mapping and perspective warp operations
  *
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -47,7 +48,8 @@
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
  *
  * see also:
- *  <d2_settexturemapping> */
+ *  <d2_settexturemapping>
+ */
 d2_s32 d2_utility_maptriangle(d2_device *handle, const d2_f32 *points, const d2_f32 *uvs)
 {
 	d2_contextdata *ctx;
@@ -129,7 +131,7 @@ d2_s32 d2_utility_maptriangle(d2_device *handle, const d2_f32 *points, const d2_
  *
  * see also:
  *  <d2_settexturemapping>
- * */
+ */
 d2_s32 d2_utility_perspectivewarp(d2_device *handle, d2_u16 srcwidth, d2_u16 srcheight, d2_s16 srcx,
 				  d2_s16 srcy, d2_s16 dstwidth, d2_s16 dstheight, d2_s16 dstx,
 				  d2_s16 dsty, d2_u16 wt)
@@ -158,7 +160,7 @@ d2_s32 d2_utility_perspectivewarp(d2_device *handle, d2_u16 srcwidth, d2_u16 src
 				(d2_s32)tty + ((d2_s32)srcy << 16),
 			/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 			(d2_s32)dxu, 0, 0, 0);
-		if (D2_OK != result) {
+		if (result != D2_OK) {
 			return result;
 		}
 
@@ -166,7 +168,7 @@ d2_s32 d2_utility_perspectivewarp(d2_device *handle, d2_u16 srcwidth, d2_u16 src
 				      (d2_point)((dsty + (d2_s16)y) << 4),
 				      (d2_width)(dstwidth << 4), 1 << 4);
 			/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-		if (D2_OK != result) {
+		if (result != D2_OK) {
 			return result;
 		}
 
@@ -202,7 +204,7 @@ d2_s32 d2_utility_perspectivewarp(d2_device *handle, d2_u16 srcwidth, d2_u16 src
  *
  * returns:
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_utility_fbblitcopy(d2_device *handle, d2_u16 width, d2_u16 height, d2_blitpos srcx,
 			     d2_blitpos srcy, d2_blitpos dstx, d2_blitpos dsty, d2_u32 flags)
 {
@@ -235,6 +237,7 @@ d2_s32 d2_utility_fbblitcopy(d2_device *handle, d2_u16 width, d2_u16 height, d2_
 	/* blit pitch has to be positive. flip vertical axis for blit source/texture if required */
 	if (fb_pitch < 0) {
 		d2_s32 fb_ptr_offset = (d2_s32)(fb_height - 1) * fb_pitch * (d2_s32)fb_bpp;
+
 		fb_ptr_blit = (void *)(((d2_char *)fb_ptr) + fb_ptr_offset);
 		fb_pitch_blit = -fb_pitch;
 		srcy_blit = (d2_blitpos)(d2_s32)(fb_height - height - srcy);
@@ -247,7 +250,7 @@ d2_s32 d2_utility_fbblitcopy(d2_device *handle, d2_u16 width, d2_u16 height, d2_
 
 	result = d2_setblitsrc(handle, fb_ptr_blit, fb_pitch_blit, (d2_s32)fb_width,
 			       (d2_s32)fb_height, (d2_u32)fb_format);
-	if (D2_OK != result) {
+	if (result != D2_OK) {
 		return result;
 	}
 
@@ -272,7 +275,7 @@ d2_s32 d2_utility_fbblitcopy(d2_device *handle, d2_u16 width, d2_u16 height, d2_
 				handle, (d2_s32)strwidth, (d2_s32)height, strx, srcy_blit,
 				(d2_width)D2_FIX4(strwidth), (d2_width)D2_FIX4(height),
 				(d2_point)D2_FIX4(strx + offset), (d2_point)D2_FIX4(srcy), flags);
-			if (D2_OK != result) {
+			if (result != D2_OK) {
 				return result;
 			}
 		} while (strx > srcx);
@@ -280,11 +283,13 @@ d2_s32 d2_utility_fbblitcopy(d2_device *handle, d2_u16 width, d2_u16 height, d2_
 	}
 
 	/* vertical offset with destination region AFTER source region and overlap: vertical flip in
-	 * source and destination */
+	 * source and destination
+	 */
 	if ((dsty > srcy) && (dsty < (srcy + height)) && ((dstx + width) > srcx) &&
 	    (dstx < (srcx + width))) {
 		/* go to start of last line */
 		d2_s32 fb_ptr_offset = (d2_s32)(fb_height - 1) * fb_pitch * (d2_s32)fb_bpp;
+
 		D2_DEV(handle)->framebuffer = (void *)(((d2_u8 *)fb_ptr) + fb_ptr_offset);
 		D2_DEV(handle)->pitch = -fb_pitch;
 		dsty = (d2_blitpos)(fb_height - height - dsty);
@@ -306,7 +311,7 @@ d2_s32 d2_utility_fbblitcopy(d2_device *handle, d2_u16 width, d2_u16 height, d2_
 			     (d2_width)D2_FIX4(width), (d2_width)D2_FIX4(height),
 			     (d2_point)D2_FIX4(dstx), (d2_point)D2_FIX4(dsty), flags);
 
-	if (1 == flipped) {
+	if (flipped == 1) {
 		/* restore framebuffer settings */
 		D2_DEV(handle)->framebuffer = fb_ptr;
 		D2_DEV(handle)->pitch = fb_pitch;
@@ -329,10 +334,10 @@ d2_s32 d2_utility_fbblitcopy(d2_device *handle, d2_u16 width, d2_u16 height, d2_
  *   flag - 0 will activate the high limiter precision if possible,
  *          1 will deactivate the feature even on newer version of D/AVE 2D.
  *
- * */
+ */
 void d2_rendercircle_no_hilimiterprecision(d2_device *handle, d2_u32 flag)
 {
-	if (0 == flag) {
+	if (flag == 0) {
 		/* set the hilimiterprecision bit if possible to support this feature from now on */
 		if (0 != D2_DEV(handle)->hilimiterprecision_supported) {
 			D2_DEV(handle)->hwrevision |= D2FB_HILIMITERPRECISION;

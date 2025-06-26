@@ -33,10 +33,10 @@ typedef struct _d0_fixed_range_fixed_blk_memblock {
 typedef struct _d0_fixed_range_fixed_blk_heap {
 	d0_fixed_range_fixed_blk_memblock *freeblocks;
 	d0_fixed_range_fixed_blk_memblock *usedblocks;
-	unsigned int maxidx; // size of both arrays -1
+	unsigned int maxidx; /* size of both arrays -1 */
 } d0_fixed_range_fixed_blkcnt_heap;
 
-//---------------------------------------------------------------------------
+/* --------------------------------------------------------------------------- */
 
 extern void d0_fixed_range_fixed_blkcnt_heapinit(void *ctrlblk, void *heapaddr,
 						 unsigned int heapsize, unsigned int maxblocks);
@@ -44,7 +44,7 @@ extern void *d0_fixed_range_fixed_blkcnt_heapalloc(void *ctrlblk, unsigned int s
 extern unsigned int d0_fixed_range_fixed_blkcnt_heapfree(void *ctrlblk, void *ptr);
 extern unsigned int d0_fixed_range_fixed_blkcnt_heapmsize(void *ctrlblk, void *ptr);
 
-//---------------------------------------------------------------------------
+/* --------------------------------------------------------------------------- */
 #ifdef __cplusplus
 }
 #endif

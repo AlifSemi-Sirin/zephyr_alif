@@ -33,7 +33,8 @@
  *  2012-09-25 BSp  MISRA cleanup
  *  2012-10-19 MRe  version 3.8
  *  2020-02-05 MRe  version 3.18 added d2_inithwburstlengthlimit
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #ifndef __1_dave_driver_h_H
 #define __1_dave_driver_h_H
@@ -54,15 +55,15 @@ extern "C" {
 #endif
 
 /*---------------------------------------------------------------------------
- Title: Basic Types
-
-    Note that several types represent fixedpoint numbers.
-    The C compiler cannot directly create these from constants.
-    Therefore if you want to pass an integer value of 42 to a
-    function that expects an argument of e.g. type <d2_point> you would have to write :
-    > function( 42 << 4 );    // conversion from integer to fixedpoint
-    see also <D2_FIX4(x)>
-*/
+ * Title: Basic Types
+ *
+ *    Note that several types represent fixedpoint numbers.
+ *    The C compiler cannot directly create these from constants.
+ *    Therefore if you want to pass an integer value of 42 to a
+ *    function that expects an argument of e.g. type <d2_point> you would have to write :
+ *    > function( 42 << 4 );    // conversion from integer to fixedpoint
+ *    see also <D2_FIX4(x)>
+ */
 
 #ifndef __1_dave_base_h_H
 typedef void d1_device;
@@ -74,117 +75,118 @@ typedef void d1_device;
 #define D2_EXTERN extern
 
 /*---------------------------------------------------------------------------
-  Type: d2_device
-    void
-
-    Abstract type. The application uses pointers of this type to hold the address of a device
-  structure without knowing its internal layout.
-
-    see for example : <d2_opendevice>
-*/
+ *  Type: d2_device
+ *    void
+ *
+ *    Abstract type. The application uses pointers of this type to hold the address of a device
+ *  structure without knowing its internal layout.
+ *
+ *    see for example : <d2_opendevice>
+ */
 typedef void d2_device;
 
 /*---------------------------------------------------------------------------
-  Type: d2_context
-    void
-
-    Abstract type. The application uses pointers of this type to hold the address of a context
-  structure without knowing its internal layout.
-
-    see for example : <d2_newcontext>
-*/
+ *  Type: d2_context
+ *    void
+ *
+ *    Abstract type. The application uses pointers of this type to hold the address of a context
+ *  structure without knowing its internal layout.
+ *
+ *    see for example : <d2_newcontext>
+ */
 typedef void d2_context;
 
 /*---------------------------------------------------------------------------
-  Type: d2_renderbuffer
-    void
-
-    Abstract type. The application uses pointers of this type to hold the address of a renderbuffer
-  structure without knowing its internal layout.
-
-    see for example : <d2_newrenderbuffer>
-*/
+ *  Type: d2_renderbuffer
+ *    void
+ *
+ *    Abstract type. The application uses pointers of this type to hold the address of a renderbuffer
+ *  structure without knowing its internal layout.
+ *
+ *    see for example : <d2_newrenderbuffer>
+ */
 typedef void d2_renderbuffer;
 
 /*---------------------------------------------------------------------------
-  Type: d2_color
-    unsigned long
-
-    32bit RGB value. Upper 8bits are ignored but should be set to zero.
-    All colors are passed to the driver in this format regardless of the framebuffer format.
-
-    see for example : <d2_setcolor>
-*/
+ *  Type: d2_color
+ *    unsigned long
+ *
+ *    32bit RGB value. Upper 8bits are ignored but should be set to zero.
+ *    All colors are passed to the driver in this format regardless of the framebuffer format.
+ *
+ *    see for example : <d2_setcolor>
+ */
 typedef d2_u32 d2_color;
 
 /*---------------------------------------------------------------------------
-  Type: d2_alpha
-    unsigned char
-
-    Alpha information is passed as 8bit values. 255 representing fully opaque and 0 totally
-    transparent colors.
-
-    see for example : <d2_setalpha>
-*/
+ *  Type: d2_alpha
+ *    unsigned char
+ *
+ *    Alpha information is passed as 8bit values. 255 representing fully opaque and 0 totally
+ *    transparent colors.
+ *
+ *    see for example : <d2_setalpha>
+ */
 typedef d2_u8 d2_alpha;
 
 /*---------------------------------------------------------------------------
-  Type: d2_width
-    short (*fixedpoint*)
-
-    Width is defined as an unsigned 10:4 fixedpoint number (4 bits fraction).
-    So the maximum width is 1023 and the smallest nonzero width is 1/16.
-*/
+ *  Type: d2_width
+ *    short (*fixedpoint*)
+ *
+ *    Width is defined as an unsigned 10:4 fixedpoint number (4 bits fraction).
+ *    So the maximum width is 1023 and the smallest nonzero width is 1/16.
+ */
 typedef d2_s16 d2_width;
 
 /*---------------------------------------------------------------------------
-  Type: d2_point
-    short (*fixedpoint*)
-
-    Point defines a vertex component (e.g. the x coordinate of an endpoint) pixel position
-    and is specified as a signed 1:11:4 fixedpoint number (1bit sign, 11 bits integer, 4 bits
-  fraction). So the integer range is 2047 to -2048 and the smallest positive value is 1/16.
-
-    Points are stored as 16bit quantities because they represent direct screen coordinates
-    and therefor do not become larger than 2047 even for HDTV resolutions.
-
-    see for example : <d2_renderline>
-*/
+ *  Type: d2_point
+ *    short (*fixedpoint*)
+ *
+ *    Point defines a vertex component (e.g. the x coordinate of an endpoint) pixel position
+ *    and is specified as a signed 1:11:4 fixedpoint number (1bit sign, 11 bits integer, 4 bits
+ *  fraction). So the integer range is 2047 to -2048 and the smallest positive value is 1/16.
+ *
+ *    Points are stored as 16bit quantities because they represent direct screen coordinates
+ *    and therefor do not become larger than 2047 even for HDTV resolutions.
+ *
+ *    see for example : <d2_renderline>
+ */
 typedef d2_s16 d2_point;
 
 /*---------------------------------------------------------------------------
-Type: d2_border
-    short
-
-    The border type is used only when setting clip borders. In contrast to points, borders do
-    not contain any fractional information (no subpixel clipping) and are simple 11bit signed
-    integers.
-
-    see for example : <d2_cliprect>
-*/
+ * Type: d2_border
+ *    short
+ *
+ *    The border type is used only when setting clip borders. In contrast to points, borders do
+ *    not contain any fractional information (no subpixel clipping) and are simple 11bit signed
+ *    integers.
+ *
+ *    see for example : <d2_cliprect>
+ */
 typedef d2_s16 d2_border;
 
 /*---------------------------------------------------------------------------
-  Type: d2_pattern
-    unsigned long
-
-    Patterns are Nbit bitmasks (N is 32 at most so they are passed as longs)
-
-    see for example : <d2_setpattern>
-*/
+ *  Type: d2_pattern
+ *    unsigned long
+ *
+ *    Patterns are Nbit bitmasks (N is 32 at most so they are passed as longs)
+ *
+ *    see for example : <d2_setpattern>
+ */
 typedef d2_u32 d2_pattern;
 
 /*---------------------------------------------------------------------------
-  Type: d2_blitpos
-      unsigned short
-
-      Blitpos defines an integer position in the source bitmap of a blit rendering operation.
-      The allowed range is 0 to 1023.
-*/
+ *  Type: d2_blitpos
+ *      unsigned short
+ *
+ *      Blitpos defines an integer position in the source bitmap of a blit rendering operation.
+ *      The allowed range is 0 to 1023.
+ */
 typedef d2_u16 d2_blitpos;
 
 /*---------------------------------------------------------------------------
- * enums */
+ * enums
+ */
 
 typedef d2_u32 d2_rendermodes;
 
@@ -471,223 +473,237 @@ typedef d2_u32 d2_busburstlength;
 #define d2_bbl_32 5u /* max bus burst length = 32     */
 
 /*---------------------------------------------------------------------------
- * basic functions */
+ * basic functions
+ */
 
 D2_EXTERN d2_s32 d2_getversion(void);
 D2_EXTERN const d2_char *d2_getversionstring(void);
-D2_EXTERN d2_device *d2_opendevice(d2_u32 flags);
-D2_EXTERN d2_s32 d2_closedevice(d2_device *handle);
-D2_EXTERN d2_s32 d2_geterror(const d2_device *handle);
-D2_EXTERN const d2_char *d2_geterrorstring(const d2_device *handle);
+D2_EXTERN d2_device * d2_opendevice(d2_u32 flags);
+D2_EXTERN d2_s32 d2_closedevice(d2_device * handle);
+D2_EXTERN d2_s32 d2_geterror(const d2_device * handle);
+D2_EXTERN const d2_char *d2_geterrorstring(const d2_device * handle);
 D2_EXTERN const d2_char *d2_translateerror(d2_s32 errorcode);
-D2_EXTERN d2_s32 d2_inithw(d2_device *handle, d2_u32 flags);
-D2_EXTERN d2_s32 d2_deinithw(d2_device *handle);
-D2_EXTERN d2_s32 d2_inithwburstlengthlimit(d2_device *handle, d2_busburstlength burstlengthFBread,
+D2_EXTERN d2_s32 d2_inithw(d2_device * handle, d2_u32 flags);
+D2_EXTERN d2_s32 d2_deinithw(d2_device * handle);
+D2_EXTERN d2_s32 d2_inithwburstlengthlimit(d2_device * handle, d2_busburstlength burstlengthFBread,
 					   d2_busburstlength burstlengthFBwrite,
 					   d2_busburstlength burstlengthTX,
 					   d2_busburstlength burstlengthDL);
-D2_EXTERN d1_device *d2_level1interface(const d2_device *handle);
-D2_EXTERN d2_u32 d2_getrevisionhw(const d2_device *handle);
-D2_EXTERN const d2_char *d2_getrevisionstringhw(const d2_device *handle);
-D2_EXTERN d2_s32 d2_setdlistblocksize(d2_device *handle, d2_u32 size);
-D2_EXTERN d2_u32 d2_getdlistblocksize(const d2_device *handle);
-D2_EXTERN d2_u32 d2_getdlistblockcount(d2_device *handle);
-D2_EXTERN d2_s32 d2_commandspending(d2_device *handle);
-D2_EXTERN d2_s32 d2_lowlocalmemmode(d2_device *handle, d2_u32 dlistblockfactor, d2_u32 dlistblocks);
+D2_EXTERN d1_device *d2_level1interface(const d2_device * handle);
+D2_EXTERN d2_u32 d2_getrevisionhw(const d2_device * handle);
+D2_EXTERN const d2_char *d2_getrevisionstringhw(const d2_device * handle);
+D2_EXTERN d2_s32 d2_setdlistblocksize(d2_device * handle, d2_u32 size);
+D2_EXTERN d2_u32 d2_getdlistblocksize(const d2_device * handle);
+D2_EXTERN d2_u32 d2_getdlistblockcount(d2_device * handle);
+D2_EXTERN d2_s32 d2_commandspending(d2_device * handle);
+D2_EXTERN d2_s32 d2_lowlocalmemmode(d2_device * handle, d2_u32 dlistblockfactor, d2_u32 dlistblocks);
 
 /*---------------------------------------------------------------------------
- * context management */
+ * context management
+ */
 
-D2_EXTERN d2_context *d2_newcontext(d2_device *handle);
-D2_EXTERN d2_s32 d2_freecontext(d2_device *handle, d2_context *ctx);
-D2_EXTERN d2_s32 d2_selectcontext(d2_device *handle, d2_context *ctx);
-D2_EXTERN d2_s32 d2_solidcontext(d2_device *handle, d2_context *ctx);
-D2_EXTERN d2_s32 d2_outlinecontext(d2_device *handle, d2_context *ctx);
-D2_EXTERN d2_context *d2_getcontext(d2_device *handle, d2_s32 mode);
+D2_EXTERN d2_context * d2_newcontext(d2_device * handle);
+D2_EXTERN d2_s32 d2_freecontext(d2_device * handle, d2_context * ctx);
+D2_EXTERN d2_s32 d2_selectcontext(d2_device * handle, d2_context * ctx);
+D2_EXTERN d2_s32 d2_solidcontext(d2_device * handle, d2_context * ctx);
+D2_EXTERN d2_s32 d2_outlinecontext(d2_device * handle, d2_context * ctx);
+D2_EXTERN d2_context * d2_getcontext(d2_device * handle, d2_s32 mode);
 
 /*---------------------------------------------------------------------------
- * device */
+ * device
+ */
 
-D2_EXTERN d2_s32 d2_framebuffer(d2_device *handle, void *ptr, d2_s32 pitch, d2_u32 width,
+D2_EXTERN d2_s32 d2_framebuffer(d2_device * handle, void *ptr, d2_s32 pitch, d2_u32 width,
 				d2_u32 height, d2_s32 format);
-D2_EXTERN d2_s32 d2_cliprect(d2_device *handle, d2_border xmin, d2_border ymin, d2_border xmax,
+D2_EXTERN d2_s32 d2_cliprect(d2_device * handle, d2_border xmin, d2_border ymin, d2_border xmax,
 			     d2_border ymax);
-D2_EXTERN d2_s32 d2_flushframe(d2_device *handle);
-D2_EXTERN d2_s32 d2_startframe(d2_device *handle);
-D2_EXTERN d2_s32 d2_endframe(d2_device *handle);
-D2_EXTERN d2_s32 d2_relocateframe(d2_device *handle, const void *ptr);
-D2_EXTERN d2_s32 d2_clear(d2_device *handle, d2_color color);
-D2_EXTERN d2_s32 d2_getcliprect(d2_device *handle, d2_border *xmin, d2_border *ymin,
-				d2_border *xmax, d2_border *ymax);
-D2_EXTERN d2_s32 d2_getframebuffer(d2_device *handle, void **ptr, d2_s32 *pitch, d2_u32 *width,
+D2_EXTERN d2_s32 d2_flushframe(d2_device * handle);
+D2_EXTERN d2_s32 d2_startframe(d2_device * handle);
+D2_EXTERN d2_s32 d2_endframe(d2_device * handle);
+D2_EXTERN d2_s32 d2_relocateframe(d2_device * handle, const void *ptr);
+D2_EXTERN d2_s32 d2_clear(d2_device * handle, d2_color color);
+D2_EXTERN d2_s32 d2_getcliprect(d2_device * handle, d2_border * xmin, d2_border * ymin,
+				d2_border * xmax, d2_border * ymax);
+D2_EXTERN d2_s32 d2_getframebuffer(d2_device * handle, void **ptr, d2_s32 *pitch, d2_u32 *width,
 				   d2_u32 *height, d2_s32 *format);
 
 /*---------------------------------------------------------------------------
- * device global attributes */
+ * device global attributes
+ */
 
-D2_EXTERN d2_s32 d2_selectrendermode(d2_device *handle, d2_u32 mode);
-D2_EXTERN d2_s32 d2_outlinewidth(d2_device *handle, d2_width width);
-D2_EXTERN d2_s32 d2_shadowoffset(d2_device *handle, d2_point x, d2_point y);
-D2_EXTERN d2_u32 d2_getrendermode(const d2_device *handle);
-D2_EXTERN d2_s32 d2_layermerge(d2_device *handle);
+D2_EXTERN d2_s32 d2_selectrendermode(d2_device * handle, d2_u32 mode);
+D2_EXTERN d2_s32 d2_outlinewidth(d2_device * handle, d2_width width);
+D2_EXTERN d2_s32 d2_shadowoffset(d2_device * handle, d2_point x, d2_point y);
+D2_EXTERN d2_u32 d2_getrendermode(const d2_device * handle);
+D2_EXTERN d2_s32 d2_layermerge(d2_device * handle);
 
 /*---------------------------------------------------------------------------
- * renderbuffer management */
+ * renderbuffer management
+ */
 
-D2_EXTERN d2_renderbuffer *d2_newrenderbuffer(d2_device *handle, d2_u32 initialsize,
+D2_EXTERN d2_renderbuffer * d2_newrenderbuffer(d2_device * handle, d2_u32 initialsize,
 					      d2_u32 stepsize);
-D2_EXTERN d2_s32 d2_freerenderbuffer(d2_device *handle, d2_renderbuffer *buffer);
-D2_EXTERN d2_s32 d2_selectrenderbuffer(d2_device *handle, d2_renderbuffer *buffer);
-D2_EXTERN d2_s32 d2_executerenderbuffer(d2_device *handle, d2_renderbuffer *buffer, d2_u32 flags);
-D2_EXTERN d2_renderbuffer *d2_getrenderbuffer(d2_device *handle, d2_s32 index);
-D2_EXTERN d2_s32 d2_dumprenderbuffer(d2_device *handle, d2_renderbuffer *buffer, void **rdata,
+D2_EXTERN d2_s32 d2_freerenderbuffer(d2_device * handle, d2_renderbuffer * buffer);
+D2_EXTERN d2_s32 d2_selectrenderbuffer(d2_device * handle, d2_renderbuffer * buffer);
+D2_EXTERN d2_s32 d2_executerenderbuffer(d2_device * handle, d2_renderbuffer * buffer, d2_u32 flags);
+D2_EXTERN d2_renderbuffer * d2_getrenderbuffer(d2_device * handle, d2_s32 index);
+D2_EXTERN d2_s32 d2_dumprenderbuffer(d2_device * handle, d2_renderbuffer * buffer, void **rdata,
 				     d2_s32 *rsize);
-D2_EXTERN d2_u32 d2_getrenderbuffersize(d2_device *handle, d2_renderbuffer *rb);
-D2_EXTERN d2_s32 d2_freedumpedbuffer(d2_device *handle, void *data);
+D2_EXTERN d2_u32 d2_getrenderbuffersize(d2_device * handle, d2_renderbuffer * rb);
+D2_EXTERN d2_s32 d2_freedumpedbuffer(d2_device * handle, void *data);
 
 /*---------------------------------------------------------------------------
- * context attribute writes */
+ * context attribute writes
+ */
 
-D2_EXTERN d2_s32 d2_setcolor(d2_device *handle, d2_s32 index, d2_color color);
-D2_EXTERN d2_s32 d2_setalpha(d2_device *handle, d2_alpha alpha);
-D2_EXTERN d2_s32 d2_setalphaex(d2_device *handle, d2_s32 index, d2_alpha alpha);
-D2_EXTERN d2_s32 d2_setblur(d2_device *handle, d2_width blur);
-D2_EXTERN d2_s32 d2_setblendmode(d2_device *handle, d2_u32 srcfactor, d2_u32 dstfactor);
-D2_EXTERN d2_s32 d2_setalphablendmode(d2_device *handle, d2_u32 srcfactor, d2_u32 dstfactor);
-D2_EXTERN d2_s32 d2_setalphablendmodeex(d2_device *handle, d2_u32 srcfactor, d2_u32 dstfactor,
+D2_EXTERN d2_s32 d2_setcolor(d2_device * handle, d2_s32 index, d2_color color);
+D2_EXTERN d2_s32 d2_setalpha(d2_device * handle, d2_alpha alpha);
+D2_EXTERN d2_s32 d2_setalphaex(d2_device * handle, d2_s32 index, d2_alpha alpha);
+D2_EXTERN d2_s32 d2_setblur(d2_device * handle, d2_width blur);
+D2_EXTERN d2_s32 d2_setblendmode(d2_device * handle, d2_u32 srcfactor, d2_u32 dstfactor);
+D2_EXTERN d2_s32 d2_setalphablendmode(d2_device * handle, d2_u32 srcfactor, d2_u32 dstfactor);
+D2_EXTERN d2_s32 d2_setalphablendmodeex(d2_device * handle, d2_u32 srcfactor, d2_u32 dstfactor,
 					d2_u32 blendflags);
-D2_EXTERN d2_s32 d2_setalphagradient(d2_device *handle, d2_s32 index, d2_point x, d2_point y,
+D2_EXTERN d2_s32 d2_setalphagradient(d2_device * handle, d2_s32 index, d2_point x, d2_point y,
 				     d2_point dx, d2_point dy);
-D2_EXTERN d2_s32 d2_setclipgradient(d2_device *handle, d2_s32 index, d2_point x, d2_point y,
+D2_EXTERN d2_s32 d2_setclipgradient(d2_device * handle, d2_s32 index, d2_point x, d2_point y,
 				    d2_s32 nx, d2_s32 ny, d2_u32 flags);
-D2_EXTERN d2_s32 d2_setalphamode(d2_device *handle, d2_u32 mode);
-D2_EXTERN d2_s32 d2_setantialiasing(d2_device *handle, d2_s32 enable);
-D2_EXTERN d2_s32 d2_setpatternalpha(d2_device *handle, d2_s32 index, d2_alpha alpha);
-D2_EXTERN d2_s32 d2_setfillmode(d2_device *handle, d2_u32 mode);
-D2_EXTERN d2_s32 d2_setpattern(d2_device *handle, d2_pattern pattern);
-D2_EXTERN d2_s32 d2_setpatternparam(d2_device *handle, d2_point x, d2_point y, d2_width dx,
+D2_EXTERN d2_s32 d2_setalphamode(d2_device * handle, d2_u32 mode);
+D2_EXTERN d2_s32 d2_setantialiasing(d2_device * handle, d2_s32 enable);
+D2_EXTERN d2_s32 d2_setpatternalpha(d2_device * handle, d2_s32 index, d2_alpha alpha);
+D2_EXTERN d2_s32 d2_setfillmode(d2_device * handle, d2_u32 mode);
+D2_EXTERN d2_s32 d2_setpattern(d2_device * handle, d2_pattern pattern);
+D2_EXTERN d2_s32 d2_setpatternparam(d2_device * handle, d2_point x, d2_point y, d2_width dx,
 				    d2_width dy);
-D2_EXTERN d2_s32 d2_setpatternmode(d2_device *handle, d2_u32 mode);
-D2_EXTERN d2_s32 d2_setpatternsize(d2_device *handle, d2_s32 size);
-D2_EXTERN d2_s32 d2_setlinecap(d2_device *handle, d2_u32 mode);
-D2_EXTERN d2_s32 d2_setlinejoin(d2_device *handle, d2_u32 mode);
-D2_EXTERN d2_s32 d2_setlinepattern(d2_device *handle, d2_width scale, d2_s32 offset);
-D2_EXTERN d2_s32 d2_setmiterlimit(d2_device *handle, d2_width miter);
-D2_EXTERN d2_s32 d2_settexture(d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width,
+D2_EXTERN d2_s32 d2_setpatternmode(d2_device * handle, d2_u32 mode);
+D2_EXTERN d2_s32 d2_setpatternsize(d2_device * handle, d2_s32 size);
+D2_EXTERN d2_s32 d2_setlinecap(d2_device * handle, d2_u32 mode);
+D2_EXTERN d2_s32 d2_setlinejoin(d2_device * handle, d2_u32 mode);
+D2_EXTERN d2_s32 d2_setlinepattern(d2_device * handle, d2_width scale, d2_s32 offset);
+D2_EXTERN d2_s32 d2_setmiterlimit(d2_device * handle, d2_width miter);
+D2_EXTERN d2_s32 d2_settexture(d2_device * handle, void *ptr, d2_s32 pitch, d2_s32 width,
 			       d2_s32 height, d2_u32 format);
-D2_EXTERN d2_s32 d2_settexturemode(d2_device *handle, d2_u32 mode);
-D2_EXTERN d2_s32 d2_settextureoperation(d2_device *handle, d2_u8 amode, d2_u8 rmode, d2_u8 gmode,
+D2_EXTERN d2_s32 d2_settexturemode(d2_device * handle, d2_u32 mode);
+D2_EXTERN d2_s32 d2_settextureoperation(d2_device * handle, d2_u8 amode, d2_u8 rmode, d2_u8 gmode,
 					d2_u8 bmode);
-D2_EXTERN d2_s32 d2_settexopparam(d2_device *handle, d2_u32 index, d2_u32 p1, d2_u32 p2);
-D2_EXTERN d2_s32 d2_settexturemapping(d2_device *handle, d2_point x, d2_point y, d2_s32 u0,
+D2_EXTERN d2_s32 d2_settexopparam(d2_device * handle, d2_u32 index, d2_u32 p1, d2_u32 p2);
+D2_EXTERN d2_s32 d2_settexturemapping(d2_device * handle, d2_point x, d2_point y, d2_s32 u0,
 				      d2_s32 v0, d2_s32 dxu, d2_s32 dyu, d2_s32 dxv, d2_s32 dyv);
-D2_EXTERN d2_s32 d2_settexelcenter(d2_device *handle, d2_point x, d2_point y);
-D2_EXTERN d2_s32 d2_settexclut(d2_device *handle, d2_color *clut);
-D2_EXTERN d2_s32 d2_settexclut_part(d2_device *handle, const d2_color *clut_part,
+D2_EXTERN d2_s32 d2_settexelcenter(d2_device * handle, d2_point x, d2_point y);
+D2_EXTERN d2_s32 d2_settexclut(d2_device * handle, d2_color * clut);
+D2_EXTERN d2_s32 d2_settexclut_part(d2_device * handle, const d2_color * clut_part,
 				    d2_u32 start_index, d2_u32 length);
-D2_EXTERN d2_s32 d2_writetexclut_direct(d2_device *handle, const d2_color *clut_part,
+D2_EXTERN d2_s32 d2_writetexclut_direct(d2_device * handle, const d2_color * clut_part,
 					d2_u32 start_index, d2_u32 length);
-D2_EXTERN d2_s32 d2_settexclut_offset(d2_device *handle, d2_u32 offset);
-D2_EXTERN d2_s32 d2_settexclut_format(d2_device *handle, d2_u32 format);
-D2_EXTERN d2_s32 d2_setcolorkey(d2_device *handle, d2_s32 enable, d2_color color_key);
-D2_EXTERN d2_s32 d2_setcircleextend(d2_device *handle, d2_width offset);
+D2_EXTERN d2_s32 d2_settexclut_offset(d2_device * handle, d2_u32 offset);
+D2_EXTERN d2_s32 d2_settexclut_format(d2_device * handle, d2_u32 format);
+D2_EXTERN d2_s32 d2_setcolorkey(d2_device * handle, d2_s32 enable, d2_color color_key);
+D2_EXTERN d2_s32 d2_setcircleextend(d2_device * handle, d2_width offset);
 
 /*---------------------------------------------------------------------------
- * context attritbute reads */
+ * context attritbute reads
+ */
 
-D2_EXTERN d2_color d2_getcolor(d2_device *handle, d2_s32 index);
-D2_EXTERN d2_alpha d2_getalpha(d2_device *handle);
-D2_EXTERN d2_alpha d2_getalphaex(d2_device *handle, d2_s32 index);
-D2_EXTERN d2_width d2_getblur(d2_device *handle);
-D2_EXTERN d2_u32 d2_getblendmodesrc(d2_device *handle);
-D2_EXTERN d2_u32 d2_getblendmodedst(d2_device *handle);
-D2_EXTERN d2_u32 d2_getalphablendmodesrc(d2_device *handle);
-D2_EXTERN d2_u32 d2_getalphablendmodedst(d2_device *handle);
-D2_EXTERN d2_u8 d2_getalphablendmodeflags(d2_device *handle);
-D2_EXTERN d2_u8 d2_getalphamode(d2_device *handle);
-D2_EXTERN d2_s32 d2_getantialiasing(d2_device *handle);
-D2_EXTERN d2_alpha d2_getpatternalpha(d2_device *handle, d2_s32 index);
-D2_EXTERN d2_u8 d2_getfillmode(d2_device *handle);
-D2_EXTERN d2_pattern d2_getpattern(d2_device *handle);
-D2_EXTERN d2_u32 d2_getpatternmode(d2_device *handle);
-D2_EXTERN d2_s32 d2_getpatternsize(d2_device *handle);
-D2_EXTERN d2_u8 d2_getlinecap(d2_device *handle);
-D2_EXTERN d2_u8 d2_getlinejoin(d2_device *handle);
-D2_EXTERN d2_u8 d2_gettextureoperationa(d2_device *handle);
-D2_EXTERN d2_u8 d2_gettextureoperationr(d2_device *handle);
-D2_EXTERN d2_u8 d2_gettextureoperationg(d2_device *handle);
-D2_EXTERN d2_u8 d2_gettextureoperationb(d2_device *handle);
-D2_EXTERN d2_alpha d2_gettexopparam1(d2_device *handle, d2_u32 index);
-D2_EXTERN d2_alpha d2_gettexopparam2(d2_device *handle, d2_u32 index);
+D2_EXTERN d2_color d2_getcolor(d2_device * handle, d2_s32 index);
+D2_EXTERN d2_alpha d2_getalpha(d2_device * handle);
+D2_EXTERN d2_alpha d2_getalphaex(d2_device * handle, d2_s32 index);
+D2_EXTERN d2_width d2_getblur(d2_device * handle);
+D2_EXTERN d2_u32 d2_getblendmodesrc(d2_device * handle);
+D2_EXTERN d2_u32 d2_getblendmodedst(d2_device * handle);
+D2_EXTERN d2_u32 d2_getalphablendmodesrc(d2_device * handle);
+D2_EXTERN d2_u32 d2_getalphablendmodedst(d2_device * handle);
+D2_EXTERN d2_u8 d2_getalphablendmodeflags(d2_device * handle);
+D2_EXTERN d2_u8 d2_getalphamode(d2_device * handle);
+D2_EXTERN d2_s32 d2_getantialiasing(d2_device * handle);
+D2_EXTERN d2_alpha d2_getpatternalpha(d2_device * handle, d2_s32 index);
+D2_EXTERN d2_u8 d2_getfillmode(d2_device * handle);
+D2_EXTERN d2_pattern d2_getpattern(d2_device * handle);
+D2_EXTERN d2_u32 d2_getpatternmode(d2_device * handle);
+D2_EXTERN d2_s32 d2_getpatternsize(d2_device * handle);
+D2_EXTERN d2_u8 d2_getlinecap(d2_device * handle);
+D2_EXTERN d2_u8 d2_getlinejoin(d2_device * handle);
+D2_EXTERN d2_u8 d2_gettextureoperationa(d2_device * handle);
+D2_EXTERN d2_u8 d2_gettextureoperationr(d2_device * handle);
+D2_EXTERN d2_u8 d2_gettextureoperationg(d2_device * handle);
+D2_EXTERN d2_u8 d2_gettextureoperationb(d2_device * handle);
+D2_EXTERN d2_alpha d2_gettexopparam1(d2_device * handle, d2_u32 index);
+D2_EXTERN d2_alpha d2_gettexopparam2(d2_device * handle, d2_u32 index);
 
 /*---------------------------------------------------------------------------
- * rendering commands */
+ * rendering commands
+ */
 
-D2_EXTERN d2_s32 d2_renderbox(d2_device *handle, d2_point x1, d2_point y1, d2_width w, d2_width h);
-D2_EXTERN d2_s32 d2_renderline(d2_device *handle, d2_point x1, d2_point y1, d2_point x2,
+D2_EXTERN d2_s32 d2_renderbox(d2_device * handle, d2_point x1, d2_point y1, d2_width w, d2_width h);
+D2_EXTERN d2_s32 d2_renderline(d2_device * handle, d2_point x1, d2_point y1, d2_point x2,
 			       d2_point y2, d2_width w, d2_u32 flags);
-D2_EXTERN d2_s32 d2_rendertri(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
+D2_EXTERN d2_s32 d2_rendertri(d2_device * handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 			      d2_point x3, d2_point y3, d2_u32 flags);
-D2_EXTERN d2_s32 d2_renderquad(d2_device *handle, d2_point x1, d2_point y1, d2_point x2,
+D2_EXTERN d2_s32 d2_renderquad(d2_device * handle, d2_point x1, d2_point y1, d2_point x2,
 			       d2_point y2, d2_point x3, d2_point y3, d2_point x4, d2_point y4,
 			       d2_u32 flags);
-D2_EXTERN d2_s32 d2_rendercircle(d2_device *handle, d2_point x, d2_point y, d2_width r, d2_width w);
-D2_EXTERN d2_s32 d2_renderwedge(d2_device *handle, d2_point x, d2_point y, d2_width r, d2_width w,
+D2_EXTERN d2_s32 d2_rendercircle(d2_device * handle, d2_point x, d2_point y, d2_width r, d2_width w);
+D2_EXTERN d2_s32 d2_renderwedge(d2_device * handle, d2_point x, d2_point y, d2_width r, d2_width w,
 				d2_s32 nx1, d2_s32 ny1, d2_s32 nx2, d2_s32 ny2, d2_u32 flags);
-D2_EXTERN d2_s32 d2_renderline2(d2_device *handle, d2_point x1, d2_point y1, d2_point x2,
+D2_EXTERN d2_s32 d2_renderline2(d2_device * handle, d2_point x1, d2_point y1, d2_point x2,
 				d2_point y2, d2_width w1, d2_width w2, d2_u32 flags);
 
-D2_EXTERN d2_s32 d2_renderpolyline(d2_device *handle, const d2_point *data, d2_u32 count,
+D2_EXTERN d2_s32 d2_renderpolyline(d2_device * handle, const d2_point * data, d2_u32 count,
 				   d2_width w, d2_u32 flags);
-D2_EXTERN d2_s32 d2_renderpolyline2(d2_device *handle, const d2_point *data, d2_u32 count,
-				    const d2_width *w, d2_u32 flags);
-D2_EXTERN d2_s32 d2_rendertrilist(d2_device *handle, const d2_point *data, const d2_u32 *flags,
+D2_EXTERN d2_s32 d2_renderpolyline2(d2_device * handle, const d2_point * data, d2_u32 count,
+				    const d2_width * w, d2_u32 flags);
+D2_EXTERN d2_s32 d2_rendertrilist(d2_device * handle, const d2_point * data, const d2_u32 *flags,
 				  d2_u32 count);
-D2_EXTERN d2_s32 d2_rendertrifan(d2_device *handle, const d2_point *data, const d2_u32 *flags,
+D2_EXTERN d2_s32 d2_rendertrifan(d2_device * handle, const d2_point * data, const d2_u32 *flags,
 				 d2_u32 count);
-D2_EXTERN d2_s32 d2_rendertristrip(d2_device *handle, const d2_point *data, const d2_u32 *flags,
+D2_EXTERN d2_s32 d2_rendertristrip(d2_device * handle, const d2_point * data, const d2_u32 *flags,
 				   d2_u32 count);
-D2_EXTERN d2_s32 d2_renderpolygon(d2_device *handle, const d2_point *data, d2_u32 count,
+D2_EXTERN d2_s32 d2_renderpolygon(d2_device * handle, const d2_point * data, d2_u32 count,
 				  d2_u32 flags);
 
 /*---------------------------------------------------------------------------
- * blit attributes write */
+ * blit attributes write
+ */
 
-D2_EXTERN d2_s32 d2_setblitsrc(d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width,
+D2_EXTERN d2_s32 d2_setblitsrc(d2_device * handle, void *ptr, d2_s32 pitch, d2_s32 width,
 			       d2_s32 height, d2_u32 format);
 
 /*---------------------------------------------------------------------------
- * blit rendering functions */
+ * blit rendering functions
+ */
 
-D2_EXTERN d2_s32 d2_blitcopy(d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_blitpos srcx,
+D2_EXTERN d2_s32 d2_blitcopy(d2_device * handle, d2_s32 srcwidth, d2_s32 srcheight, d2_blitpos srcx,
 			     d2_blitpos srcy, d2_width dstwidth, d2_width dstheight, d2_point dstx,
 			     d2_point dsty, d2_u32 flags);
 
 /*---------------------------------------------------------------------------
- * performance measurement */
-D2_EXTERN d2_s32 d2_setperfcountevent(d2_device *handle, d2_u32 counter, d2_u32 event);
-D2_EXTERN d2_s32 d2_setperfcountvalue(d2_device *handle, d2_u32 counter, d2_slong value);
-D2_EXTERN d2_slong d2_getperfcountvalue(d2_device *handle, d2_u32 counter);
+ * performance measurement
+ */
+D2_EXTERN d2_s32 d2_setperfcountevent(d2_device * handle, d2_u32 counter, d2_u32 event);
+D2_EXTERN d2_s32 d2_setperfcountvalue(d2_device * handle, d2_u32 counter, d2_slong value);
+D2_EXTERN d2_slong d2_getperfcountvalue(d2_device * handle, d2_u32 counter);
 
 /*---------------------------------------------------------------------------
- * Utility Functions */
+ * Utility Functions
+ */
 
-d2_s32 d2_utility_maptriangle(d2_device *handle, const d2_f32 *points, const d2_f32 *uvs);
-d2_s32 d2_utility_perspectivewarp(d2_device *handle, d2_u16 srcwidth, d2_u16 srcheight, d2_s16 srcx,
+d2_s32 d2_utility_maptriangle(d2_device * handle, const d2_f32 *points, const d2_f32 *uvs);
+d2_s32 d2_utility_perspectivewarp(d2_device * handle, d2_u16 srcwidth, d2_u16 srcheight, d2_s16 srcx,
 				  d2_s16 srcy, d2_s16 dstwidth, d2_s16 dstheight, d2_s16 dstx,
 				  d2_s16 dsty, d2_u16 wt);
-d2_s32 d2_utility_fbblitcopy(d2_device *handle, d2_u16 width, d2_u16 height, d2_blitpos srcx,
+d2_s32 d2_utility_fbblitcopy(d2_device * handle, d2_u16 width, d2_u16 height, d2_blitpos srcx,
 			     d2_blitpos srcy, d2_blitpos dstx, d2_blitpos dsty, d2_u32 flags);
-void d2_rendercircle_no_hilimiterprecision(d2_device *handle, d2_u32 flag);
+void d2_rendercircle_no_hilimiterprecision(d2_device * handle, d2_u32 flag);
 
 /*---------------------------------------------------------------------------
- * Dlist Functions */
+ * Dlist Functions
+ */
 
-d2_s32 d2_executedlist(d2_device *handle, const void *address, d2_u32 flags);
-d2_s32 d2_adddlist(d2_device *handle, void *address, d2_s32 size, d2_u32 flags);
+d2_s32 d2_executedlist(d2_device * handle, const void *address, d2_u32 flags);
+d2_s32 d2_adddlist(d2_device * handle, void *address, d2_s32 size, d2_u32 flags);
 
 /*---------------------------------------------------------------------------
- * assign errorcode IDs */
+ * assign errorcode IDs
+ */
 
 #define ERR(x, y) x,
 enum d2_errorcodes {
@@ -697,13 +713,15 @@ enum d2_errorcodes {
 #undef ERR
 
 /*---------------------------------------------------------------------------
- * include header files of level0 and level1 driver */
+ * include header files of level0 and level1 driver
+ */
 
 #include "dave_base.h"
 #include "dave_math.h"
 
 /*---------------------------------------------------------------------------
- * define feature bits of hardware revision */
+ * define feature bits of hardware revision
+ */
 #ifndef BIT
 #define BIT(x) (1u << (x))
 #endif

@@ -30,7 +30,8 @@
  * <Render Buffers>. Material and mode changes translate into hardware register
  * access only when something is actually rendered.
  *
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -47,12 +48,12 @@
 
 /*--------------------------------------------------------------------------
  *
- * */
-static D2_INLINE void d2_checkwaitpipeline_intern(d2_devicedata *handle, d2_u32 cr2);
+ */
+static D2_INLINE void d2_checkwaitpipeline_intern(d2_devicedata * handle, d2_u32 cr2);
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static D2_INLINE void d2_checkwaitpipeline_intern(d2_devicedata *handle, d2_u32 cr2)
 {
 	d2_u32 cr2_blend_wait_mask = D2C_WRITEALPHA2 | D2C_WRITEALPHA1 | D2C_BDFA | D2C_BDIA |
@@ -66,7 +67,7 @@ static D2_INLINE void d2_checkwaitpipeline_intern(d2_devicedata *handle, d2_u32 
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 void d2_rendertrifan_intern(d2_device *handle, d2_fp_triangle rtri, const d2_point *vert,
 			    const d2_u32 *flags, d2_u32 count)
 {
@@ -88,7 +89,7 @@ void d2_rendertrifan_intern(d2_device *handle, d2_fp_triangle rtri, const d2_poi
 		vert += 2;
 
 		/* compute shared edges */
-		if (0 == i) {
+		if (i == 0) {
 			share = d2_edge2_shared;
 		} else {
 			share = d2_edge0_shared | d2_edge2_shared;
@@ -98,7 +99,7 @@ void d2_rendertrifan_intern(d2_device *handle, d2_fp_triangle rtri, const d2_poi
 			share &= ~d2_edge2_shared;
 		}
 
-		if (NULL != flags) {
+		if (flags != NULL) {
 			share |= *flags;
 			flags++;
 		}
@@ -113,7 +114,7 @@ void d2_rendertrifan_intern(d2_device *handle, d2_fp_triangle rtri, const d2_poi
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 void d2_setupmaterial_intern(d2_devicedata *handle, d2_contextdata *ctx)
 {
 	d2_s32 i;
@@ -222,7 +223,7 @@ void d2_setupmaterial_intern(d2_devicedata *handle, d2_contextdata *ctx)
 				if (handle->srcclut != ctx->texclut_cached) {
 					ctx->texclutupload = 1;
 				}
-			} else if ((NULL != ctx->texclut) && (handle->srcclut != ctx->texclut)) {
+			} else if ((ctx->texclut != NULL) && (handle->srcclut != ctx->texclut)) {
 				ctx->texclutupload = 1;
 			} else {
 				/* empty else block to satisfy MISRA rule 14.10/2004 */
@@ -273,7 +274,7 @@ void d2_setupmaterial_intern(d2_devicedata *handle, d2_contextdata *ctx)
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 void d2_startrender_intern(d2_devicedata *handle, const d2_bbox *bbox, d2_u32 delay)
 {
 	d2_s32 w, h;
@@ -318,7 +319,7 @@ void d2_startrender_intern(d2_devicedata *handle, const d2_bbox *bbox, d2_u32 de
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 void d2_startrender_bottom_intern(d2_devicedata *handle, const d2_bbox *bbox, d2_u32 delay)
 {
 	d2_s32 w, h;
@@ -360,7 +361,8 @@ void d2_startrender_bottom_intern(d2_devicedata *handle, const d2_bbox *bbox, d2
 }
 
 /*--------------------------------------------------------------------------
- * Group: Direct Rendering */
+ * Group: Direct Rendering
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_clear
@@ -384,7 +386,7 @@ void d2_startrender_bottom_intern(d2_devicedata *handle, const d2_bbox *bbox, d2
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_clear(d2_device *handle, d2_color color)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -409,7 +411,7 @@ d2_s32 d2_clear(d2_device *handle, d2_color color)
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_renderbox(d2_device *handle, d2_point x1, d2_point y1, d2_width w, d2_width h)
 {
 	d2_s32 err = D2_ILLEGALMODE;
@@ -470,7 +472,7 @@ d2_s32 d2_renderbox(d2_device *handle, d2_point x1, d2_point y1, d2_width w, d2_
  *
  * see also:
  *   <d2_renderline2>, <d2_setlinecap>
- * */
+ */
 d2_s32 d2_renderline(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 		     d2_width w, d2_u32 flags)
 {
@@ -535,7 +537,7 @@ d2_s32 d2_renderline(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d
  *
  * see also:
  *   <d2_renderline>, <d2_setlinecap>
- * */
+ */
 d2_s32 d2_renderline2(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 		      d2_width w1, d2_width w2, d2_u32 flags)
 {
@@ -591,7 +593,7 @@ d2_s32 d2_renderline2(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, 
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_rendertri(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 		    d2_point x3, d2_point y3, d2_u32 flags)
 {
@@ -650,7 +652,7 @@ d2_s32 d2_rendertri(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_renderquad(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 		     d2_point x3, d2_point y3, d2_point x4, d2_point y4, d2_u32 flags)
 {
@@ -701,7 +703,7 @@ d2_s32 d2_renderquad(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_rendercircle(d2_device *handle, d2_point x, d2_point y, d2_width r, d2_width w)
 {
 	d2_s32 err = D2_ILLEGALMODE;
@@ -800,7 +802,7 @@ d2_s32 d2_rendercircle(d2_device *handle, d2_point x, d2_point y, d2_width r, d2
  * 0<<16,    1<<16,  0<<16,   d2_wf_concave);
  * ...
  * (end code)
- * */
+ */
 d2_s32 d2_renderwedge(d2_device *handle, d2_point x, d2_point y, d2_width r, d2_width w, d2_s32 nx1,
 		      d2_s32 ny1, d2_s32 nx2, d2_s32 ny2, d2_u32 flags)
 {
@@ -838,7 +840,7 @@ d2_s32 d2_renderwedge(d2_device *handle, d2_point x, d2_point y, d2_width r, d2_
 
 /*--------------------------------------------------------------------------
  * Group: Buffer Rendering
- * */
+ */
 
 /* function: d2_renderpolyline
  * Render a polyline
@@ -864,7 +866,7 @@ d2_s32 d2_renderwedge(d2_device *handle, d2_point x, d2_point y, d2_width r, d2_
  *
  * see also:
  *   <d2_setlinecap>, <d2_setlinejoin>
- * */
+ */
 d2_s32 d2_renderpolyline(d2_device *handle, const d2_point *data, d2_u32 count, d2_width w,
 			 d2_u32 flags)
 {
@@ -927,7 +929,7 @@ d2_s32 d2_renderpolyline(d2_device *handle, const d2_point *data, d2_u32 count, 
  *
  * see also:
  *   <d2_setlinecap>, <d2_setlinejoin>, <d2_renderpolyline>
- * */
+ */
 d2_s32 d2_renderpolyline2(d2_device *handle, const d2_point *data, d2_u32 count, const d2_width *w,
 			  d2_u32 flags)
 {
@@ -989,7 +991,7 @@ d2_s32 d2_renderpolyline2(d2_device *handle, const d2_point *data, d2_u32 count,
  *
  * see also:
  *  <d2_rendertri>, <d2_rendertrifan>, <d2_rendertristrip>
- * */
+ */
 d2_s32 d2_rendertrilist(d2_device *handle, const d2_point *data, const d2_u32 *flags, d2_u32 count)
 {
 	d2_u32 share;
@@ -1015,7 +1017,7 @@ d2_s32 d2_rendertrilist(d2_device *handle, const d2_point *data, const d2_u32 *f
 
 		data += 6;
 
-		if (NULL != flags) {
+		if (flags != NULL) {
 			share = *flags;
 			flags++;
 		}
@@ -1061,7 +1063,7 @@ d2_s32 d2_rendertrilist(d2_device *handle, const d2_point *data, const d2_u32 *f
  *
  * see also:
  *  <d2_rendertri>, <d2_rendertrifan>, <d2_rendertrilist>
- * */
+ */
 d2_s32 d2_rendertristrip(d2_device *handle, const d2_point *data, const d2_u32 *flags, d2_u32 count)
 {
 	d2_u32 i;
@@ -1091,9 +1093,9 @@ d2_s32 d2_rendertristrip(d2_device *handle, const d2_point *data, const d2_u32 *
 
 		data += 2;
 
-		if (0 == flip) {
+		if (flip == 0) {
 			/* compute shared edges */
-			if (0 == i) {
+			if (i == 0) {
 				share = d2_edge1_shared;
 			} else {
 				share = d2_edge0_shared | d2_edge1_shared;
@@ -1103,7 +1105,7 @@ d2_s32 d2_rendertristrip(d2_device *handle, const d2_point *data, const d2_u32 *
 				share &= ~d2_edge1_shared;
 			}
 
-			if (NULL != flags) {
+			if (flags != NULL) {
 				share |= *flags;
 				flags++;
 			}
@@ -1119,7 +1121,7 @@ d2_s32 d2_rendertristrip(d2_device *handle, const d2_point *data, const d2_u32 *
 				share &= ~d2_edge1_shared;
 			}
 
-			if (NULL != flags) {
+			if (flags != NULL) {
 				share |= *flags;
 				flags++;
 			}
@@ -1172,7 +1174,7 @@ d2_s32 d2_rendertristrip(d2_device *handle, const d2_point *data, const d2_u32 *
  *
  * see also:
  *  <d2_rendertri>, <d2_rendertrilist>, <d2_rendertristrip>
- * */
+ */
 d2_s32 d2_rendertrifan(d2_device *handle, const d2_point *data, const d2_u32 *flags, d2_u32 count)
 {
 	d2_u32 rmode;
@@ -1229,7 +1231,7 @@ d2_s32 d2_rendertrifan(d2_device *handle, const d2_point *data, const d2_u32 *fl
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_renderpolygon(d2_device *handle, const d2_point *data, d2_u32 count, d2_u32 flags)
 {
 	(void)flags; /* PRQA S 3112 */ /* $Misra: #COMPILER_WARNING $*/

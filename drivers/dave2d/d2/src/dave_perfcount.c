@@ -21,14 +21,15 @@
  * Check D2FB_PERFCOUNT bit of <d2_getrevisionhw> to see if performance counters
  * are available.
  *
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
 
 /*--------------------------------------------------------------------------
  * Group: Performance counting
- * */
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_setperfcountevent
@@ -70,7 +71,7 @@
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setperfcountevent(d2_device *handle, d2_u32 counter, d2_u32 event)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112 3453 */    /* $Misra: #DEBUG_MACRO $*/
@@ -126,7 +127,7 @@ d2_s32 d2_setperfcountevent(d2_device *handle, d2_u32 counter, d2_u32 event)
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_setperfcountvalue(d2_device *handle, d2_u32 counter, d2_slong value)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112 3453 */    /* $Misra: #DEBUG_MACRO $*/
@@ -136,7 +137,7 @@ d2_s32 d2_setperfcountvalue(d2_device *handle, d2_u32 counter, d2_slong value)
 		D2_RETERR(handle, D2_DEVICEBUSY);
 	}
 
-	if (0 == counter) {
+	if (counter == 0) {
 		d2hw_set(D2_DEV(handle)->hwid, D2_PERFCOUNT1, value);
 	} else {
 		d2hw_set(D2_DEV(handle)->hwid, D2_PERFCOUNT2, value);
@@ -155,13 +156,13 @@ d2_s32 d2_setperfcountvalue(d2_device *handle, d2_u32 counter, d2_slong value)
  *
  * returns:
  *   current counter register value
- * */
+ */
 d2_slong d2_getperfcountvalue(d2_device *handle, d2_u32 counter)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 3112 3453 */    /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERR(counter < 2, D2_VALUETOOBIG); /* PRQA S 3112 3453 */ /* $Misra: #DEBUG_MACRO $*/
 
-	if (0 == counter) {
+	if (counter == 0) {
 		return d2hw_get(D2_DEV(handle)->hwid, D2_PERFCOUNT1);
 	} else {
 		return d2hw_get(D2_DEV(handle)->hwid, D2_PERFCOUNT2);

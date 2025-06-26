@@ -8,7 +8,8 @@
  *
  * Changes:
  * 2007-08-31 ASc  - removed tabs, changed C++ to C comments,
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 /* Title: Errorcodes
  * List of all dave driver errorcodes.
@@ -43,7 +44,7 @@
  *   D2_NO_DISPLAYLIST  - usage of displaylists a mandatory in d2_low_localmemmode
  *   D2_NOT_ENOUGH_DLISTBLOCKS - amount of displaylist blocks as specified in <d2_lowlocalmemmode>
  * is not sufficient
- * */
+ */
 
 /*--------------------------------------------------------------------------- */
 

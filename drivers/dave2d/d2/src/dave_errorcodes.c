@@ -10,7 +10,8 @@
  *  2007-08-31 ASc  removed tabs, changed C++ to C comments,
  *                   changed g_errorcodes to const pointer to const data
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"

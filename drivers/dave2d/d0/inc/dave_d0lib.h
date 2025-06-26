@@ -9,7 +9,8 @@
  * Changes:
  *  MGe 013107 redesign
  *  ASc 083007 fix d0_initheapmanager description, changed C++ to C comments
- *  CSe 080422 export d0_preparememorymanager */
+ *  CSe 080422 export d0_preparememorymanager
+ */
 
 /******************************************************************************
  *  Title: Heap management

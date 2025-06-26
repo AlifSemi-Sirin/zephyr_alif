@@ -25,7 +25,8 @@
  * a single context might contain multiple mapping attributes if multiple
  * texture hardware units are present.
  *
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -33,9 +34,9 @@
 
 /*--------------------------------------------------------------------------
  *
- * */
-static D2_INLINE void d2_textureoperator(const d2_contextdata *ctx, d2_u32 index, d2_u32 mode,
-					 d2_alpha *c1, d2_alpha *c2); /* MISRA */
+ */
+static D2_INLINE void d2_textureoperator(const d2_contextdata * ctx, d2_u32 index, d2_u32 mode,
+						 d2_alpha * c1, d2_alpha * c2); /* MISRA */
 static D2_INLINE void d2_setupuvlimiter_intern(d2_devicedata *handle, const d2_contextdata *ctx,
 					       const d2_bbox *bbox); /* MISRA */
 static D2_INLINE void d2_setupuvlimiter_invert_intern(d2_devicedata *handle,
@@ -43,7 +44,8 @@ static D2_INLINE void d2_setupuvlimiter_invert_intern(d2_devicedata *handle,
 						      const d2_bbox *bbox); /* MISRA */
 
 /*--------------------------------------------------------------------------
- * Group: Texture Attribute Writes */
+ * Group: Texture Attribute Writes
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_settexture
@@ -105,12 +107,13 @@ static D2_INLINE void d2_setupuvlimiter_invert_intern(d2_devicedata *handle,
  *   Please notice that a cache flush using 'd1_cacheblockflush' might be necessary if memory
  * contents were changed before! To avoid problems you can use the d1 driver memory management
  * functions 'd1_copytovidmem' or 'd1_copyfromvidmem', which implicitly do a cache flush.
- * */
+ */
 d2_s32 d2_settexture(d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, d2_s32 height,
 		     d2_u32 format)
 {
 	d2_u32 format_noflags = ((format & ~d2_mode_rle) & ~d2_mode_clut);
 	d2_contextdata *ctx;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERR(ptr, D2_NOVIDEOMEM); /* PRQA S 4130, 3112 */       /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERR(pitch >= 0, D2_VALUENEGATIVE);
@@ -318,10 +321,11 @@ d2_s32 d2_settexture(d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, d
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_settexturemode(d2_device *handle, d2_u32 mode)
 {
 	d2_contextdata *ctx;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 	D2_CHECKERR((mode < 256), D2_INVALIDENUM);
 		/* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -388,12 +392,12 @@ d2_s32 d2_settexturemode(d2_device *handle, d2_u32 mode)
  *
  * see also:
  *   <d2_settexopparam>
- * */
+ */
 d2_s32 d2_settextureoperation(d2_device *handle, d2_u8 amode, d2_u8 rmode, d2_u8 gmode, d2_u8 bmode)
 {
 	d2_contextdata *ctx;
 
-	if (NULL != handle) {
+	if (handle != NULL) {
 		/*D2_VALIDATE( handle, D2_INVALIDDEVICE );*/
 
 		D2_CHECKERR((amode < 8u), D2_INVALIDENUM);
@@ -453,20 +457,21 @@ d2_s32 d2_settextureoperation(d2_device *handle, d2_u8 amode, d2_u8 rmode, d2_u8
  *
  * see also:
  *   <d2_settextureoperation>
- * */
+ */
 d2_s32 d2_settexopparam(d2_device *handle, d2_u32 index, d2_u32 p1, d2_u32 p2)
 {
 	d2_contextdata *ctx;
 
 	/* (note) some compilers (e.g. MSVC) do not issue a warning if an actual function argument
 	   exceeds the datatype range (i.e. p1/p2 are 8bit unsigneds but passing 500
-	   (test_texture_operations testcase) compiles without warnings) */
+	   (test_texture_operations testcase) compiles without warnings)
+	   */
 
 #ifndef _DEBUG
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 #endif                                                                 /* _DEBUG */
 
-	if (NULL != handle) {
+	if (handle != NULL) {
 		d2_alpha ap1, ap2;
 		/* D2_CHECKERR( p1 >= 0, D2_VALUENEGATIVE ); */
 		/* D2_CHECKERR( p2 >= 0, D2_VALUENEGATIVE ); */
@@ -528,11 +533,12 @@ d2_s32 d2_settexopparam(d2_device *handle, d2_u32 index, d2_u32 p1, d2_u32 p2)
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_settexturemapping(d2_device *handle, d2_point x, d2_point y, d2_s32 u0, d2_s32 v0,
 			    d2_s32 dxu, d2_s32 dyu, d2_s32 dxv, d2_s32 dyv)
 {
 	d2_contextdata *ctx;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ctx = D2_DEV(handle)->ctxselected;
@@ -565,10 +571,11 @@ d2_s32 d2_settexturemapping(d2_device *handle, d2_point x, d2_point y, d2_s32 u0
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_settexelcenter(d2_device *handle, d2_point x, d2_point y)
 {
 	d2_contextdata *ctx;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ctx = D2_DEV(handle)->ctxselected;
@@ -612,11 +619,12 @@ d2_s32 d2_settexelcenter(d2_device *handle, d2_point x, d2_point y)
  *
  * see also:
  *   <d2_settexture>, <d2_settexclut_part>
- * */
+ */
 d2_s32 d2_settexclut(d2_device *handle, d2_color *clut)
 {
 	d2_s32 i;
 	d2_s32 clut_entries;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 
 	if (0 == (D2_DEV(handle)->hwrevision & D2FB_TEXCLUT)) {
@@ -625,7 +633,7 @@ d2_s32 d2_settexclut(d2_device *handle, d2_color *clut)
 
 	D2_DEV(handle)->ctxselected->texclut = clut;
 
-	if (NULL == clut) {
+	if (clut == NULL) {
 		D2_DEV(handle)->ctxselected->texclutupload = 0;
 
 		if (NULL != D2_DEV(handle)->ctxselected->texclut_cached) {
@@ -678,7 +686,7 @@ d2_s32 d2_settexclut(d2_device *handle, d2_color *clut)
  *
  * see also:
  *   <d2_settexclut>
- * */
+ */
 d2_s32 d2_settexclut_part(d2_device *handle, const d2_color *clut_part, d2_u32 start_index,
 			  d2_u32 length)
 {
@@ -771,7 +779,7 @@ d2_s32 d2_settexclut_part(d2_device *handle, const d2_color *clut_part, d2_u32 s
  *
  * see also:
  *   <d2_settexclut> <d2_settexclut_part>
- * */
+ */
 d2_s32 d2_writetexclut_direct(d2_device *handle, const d2_color *clut_part, d2_u32 start_index,
 			      d2_u32 length)
 {
@@ -833,7 +841,7 @@ d2_s32 d2_writetexclut_direct(d2_device *handle, const d2_color *clut_part, d2_u
  *
  * see also:
  *  <d2_settexclut>  <d2_settexture>
- * */
+ */
 d2_s32 d2_settexclut_offset(d2_device *handle, d2_u32 offset)
 {
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -885,7 +893,7 @@ d2_s32 d2_settexclut_offset(d2_device *handle, d2_u32 offset)
  *
  * see also:
  *   <d2_settexclut> <d2_settexture>
- * */
+ */
 d2_s32 d2_settexclut_format(d2_device *handle, d2_u32 format)
 {
 	d2_contextdata *ctx;
@@ -929,7 +937,7 @@ d2_s32 d2_settexclut_format(d2_device *handle, d2_u32 format)
  *
  * see also:
  *   <d2_settexture>
- * */
+ */
 d2_s32 d2_setcolorkey(d2_device *handle, d2_s32 enable, d2_color color_key)
 {
 	d2_contextdata *ctx;
@@ -944,7 +952,7 @@ d2_s32 d2_setcolorkey(d2_device *handle, d2_s32 enable, d2_color color_key)
 
 	ctx->colorkey = color_key & 0x00ffffffu;
 
-	if (0 != enable) {
+	if (enable != 0) {
 		ctx->colkeymask = D2C_COLKEY_ENABLE;
 	} else {
 		ctx->colkeymask = 0;
@@ -956,7 +964,8 @@ d2_s32 d2_setcolorkey(d2_device *handle, d2_s32 enable, d2_color color_key)
 }
 
 /*--------------------------------------------------------------------------
- * Group: Texture Attribute Queries */
+ * Group: Texture Attribute Queries
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_gettextureoperationa
@@ -973,10 +982,11 @@ d2_s32 d2_setcolorkey(d2_device *handle, d2_s32 enable, d2_color color_key)
  *
  * see also:
  *   <d2_gettextureoperationr>, <d2_gettextureoperationg>, <d2_gettextureoperationb>
- * */
+ */
 d2_u8 d2_gettextureoperationa(d2_device *handle)
 {
 	d2_u8 ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ret = D2_DEV(handle)->ctxselected->texamode;
@@ -1000,10 +1010,11 @@ d2_u8 d2_gettextureoperationa(d2_device *handle)
  *
  * see also:
  *   <d2_gettextureoperationa>, <d2_gettextureoperationg>, <d2_gettextureoperationb>
- * */
+ */
 d2_u8 d2_gettextureoperationr(d2_device *handle)
 {
 	d2_u8 ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ret = D2_DEV(handle)->ctxselected->texrmode;
@@ -1027,10 +1038,11 @@ d2_u8 d2_gettextureoperationr(d2_device *handle)
  *
  * see also:
  *   <d2_gettextureoperationa>, <d2_gettextureoperationr>, <d2_gettextureoperationb>
- * */
+ */
 d2_u8 d2_gettextureoperationg(d2_device *handle)
 {
 	d2_u8 ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ret = D2_DEV(handle)->ctxselected->texgmode;
@@ -1054,10 +1066,11 @@ d2_u8 d2_gettextureoperationg(d2_device *handle)
  *
  * see also:
  *   <d2_gettextureoperationa>, <d2_gettextureoperationr>, <d2_gettextureoperationg>
- * */
+ */
 d2_u8 d2_gettextureoperationb(d2_device *handle)
 {
 	d2_u8 ret;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 
 	ret = D2_DEV(handle)->ctxselected->texbmode;
@@ -1088,10 +1101,11 @@ d2_u8 d2_gettextureoperationb(d2_device *handle)
  *
  * see also:
  *   <d2_settexopparam>
- * */
+ */
 d2_alpha d2_gettexopparam1(d2_device *handle, d2_u32 index)
 {
 	d2_alpha ret = (d2_alpha)D2_OK;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 
 	if (0 != (index & d2_cc_alpha)) {
@@ -1136,10 +1150,11 @@ d2_alpha d2_gettexopparam1(d2_device *handle, d2_u32 index)
  *
  * see also:
  *   <d2_settexopparam>
- * */
+ */
 d2_alpha d2_gettexopparam2(d2_device *handle, d2_u32 index)
 {
 	d2_alpha ret = (d2_alpha)D2_OK;
+
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 
 	if (0 != (index & d2_cc_alpha)) {
@@ -1164,7 +1179,7 @@ d2_alpha d2_gettexopparam2(d2_device *handle, d2_u32 index)
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static D2_INLINE void d2_textureoperator(const d2_contextdata *ctx, d2_u32 index, d2_u32 mode,
 					 d2_alpha *c1, d2_alpha *c2)
 {
@@ -1216,7 +1231,7 @@ static D2_INLINE void d2_textureoperator(const d2_contextdata *ctx, d2_u32 index
 
 /*--------------------------------------------------------------------------
  * precalculate color register settings for current texture blendmode
- * */
+ */
 void d2_setuptextureblend_intern(const d2_devicedata *handle, d2_contextdata *ctx)
 {
 	d2_alpha c1 = 0, c2 = 0;
@@ -1254,7 +1269,7 @@ void d2_setuptextureblend_intern(const d2_devicedata *handle, d2_contextdata *ct
 }
 
 /*--------------------------------------------------------------------------
- * */
+ */
 void d2_calctexturealpha_intern(d2_contextdata *ctx)
 {
 	d2_u32 texAlpha;
@@ -1271,7 +1286,7 @@ void d2_calctexturealpha_intern(d2_contextdata *ctx)
 }
 
 /*--------------------------------------------------------------------------
- * */
+ */
 void d2_calctexturemask_intern(d2_contextdata *ctx)
 {
 	d2_u32 xmask, ymask;
@@ -1300,7 +1315,7 @@ void d2_calctexturemask_intern(d2_contextdata *ctx)
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static D2_INLINE void d2_setupuvlimiter_intern(d2_devicedata *handle, const d2_contextdata *ctx,
 					       const d2_bbox *bbox)
 {
@@ -1332,13 +1347,11 @@ static D2_INLINE void d2_setupuvlimiter_intern(d2_devicedata *handle, const d2_c
 		/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 
 	D2_DLISTWRITEU(D2_LVYXADDF, ((d2_u16)xa) | (((d2_u32)((d2_u16)ya)) << 16));
-
-	return;
 }
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static D2_INLINE void d2_setupuvlimiter_invert_intern(d2_devicedata *handle,
 						      const d2_contextdata *ctx,
 						      const d2_bbox *bbox)
@@ -1372,18 +1385,16 @@ static D2_INLINE void d2_setupuvlimiter_invert_intern(d2_devicedata *handle,
 
 	D2_DLISTWRITEU(D2_LVYXADDF, ((d2_u16)xa) | (((d2_u32)((d2_u16)ya)) << 16));
 		/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-
-	return;
 }
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 void d2_setuptexture(d2_devicedata *handle, const d2_contextdata *ctx, const d2_bbox *bbox,
 		     d2_s32 flip)
 {
 	if (d2_fm_texture == ctx->fillmode) {
-		if (0 != flip) {
+		if (flip != 0) {
 			d2_setupuvlimiter_invert_intern(handle, ctx, bbox);
 		} else {
 			d2_setupuvlimiter_intern(handle, ctx, bbox);

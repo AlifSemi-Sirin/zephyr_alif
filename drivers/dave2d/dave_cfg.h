@@ -7,7 +7,8 @@
  * Project:     D/AVE
  * File:        dave_cfg.h
  * Description: This file contains the D/AVE D1 configuration definitions
- *---------------------------------------------------------------------------*/
+ *---------------------------------------------------------------------------
+ */
 
 #ifndef __1_dave_cfg_h_H
 #define __1_dave_cfg_h_H

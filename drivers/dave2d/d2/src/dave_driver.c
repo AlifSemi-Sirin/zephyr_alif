@@ -29,14 +29,16 @@
  *  2012-09-25 BSp  MISRA cleanup
  *  2013-06-25 MRe  changed check of dlistblocks in d2_lowlocalmemmode to >= 1
  *  2020-02-05 MRe  added d2_inithwburstlengthlimit
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 /*--------------------------------------------------------------------------
  *
  * Title: Basic Functions
  * Driver device management and hardware initialization / shutdown.
  *
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 #include "dave_driver.h"
 #include "dave_intern.h"
 #include "dave_memory.h"
@@ -44,7 +46,7 @@
 #include "dave_dlist.h"
 
 /*-------------------------------------------------------------------------- */
-static d2_devicedata *g_devicechain = NULL;
+static d2_devicedata * g_devicechain;
 
 #ifdef _DEBUG
 #define _DEBUG_STR " _DEBUG "
@@ -54,7 +56,7 @@ static d2_devicedata *g_devicechain = NULL;
 
 /*---------------------------------------------------------------------------
  * List of hardware registers that can be cached for redundancy elimination
- * */
+ */
 #ifdef D2_USEREGCACHE
 const d2_u8 d2_cacheableregs[D2_QUANTITY] = {
 	0, /*D2_CONTROL      0 */
@@ -121,9 +123,9 @@ const d2_u8 d2_cacheableregs[D2_QUANTITY] = {
 
 /*--------------------------------------------------------------------------
  * Group: Static functions
- * */
+ */
 
-static d2_contextdata_backup *d2_newbackupcontext_intern(d2_device *handle, d2_u32 flags);
+static d2_contextdata_backup * d2_newbackupcontext_intern(d2_device * handle, d2_u32 flags);
 static void d2_strcpy(d2_char *dst, const d2_char *src, d2_u32 dst_size);
 static void d2_strcat(d2_char *dst, const d2_char *src, d2_u32 dst_size);
 #ifdef NEED_D2_INTTOSTR
@@ -133,7 +135,7 @@ static void d2_hextostr(d2_char *a_dst, d2_u32 a_number, d2_u32 a_size);
 
 /*--------------------------------------------------------------------------
  * Group: Device management
- * */
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_getversionstring
@@ -144,7 +146,7 @@ static void d2_hextostr(d2_char *a_dst, d2_u32 a_number, d2_u32 a_size);
  *
  * see also:
  *  <d2_getversion>
- * */
+ */
 const d2_char *d2_getversionstring(void)
 {
 	static const d2_char g_versionid[] = "@(#)DAVE driver " D2_VERSION_STRING D2_VERSION_STATE
@@ -166,7 +168,7 @@ const d2_char *d2_getversionstring(void)
  *
  * see also:
  *  <d2_getversionstring>
- * */
+ */
 d2_s32 d2_getversion(void)
 {
 	return D2_VERSION;
@@ -175,7 +177,7 @@ d2_s32 d2_getversion(void)
 /*--------------------------------------------------------------------------
  * d2_newbackupcontext_intern
  * Create a backup area for context data that is used by blit.
- * */
+ */
 static d2_contextdata_backup *d2_newbackupcontext_intern(d2_device *handle, d2_u32 flags)
 {
 	d2_contextdata_backup *ctx;
@@ -226,7 +228,7 @@ static d2_contextdata_backup *d2_newbackupcontext_intern(d2_device *handle, d2_u
  *
  * returns:
  *  device pointer or NULL if not enough memory was available
- * */
+ */
 d2_device *d2_opendevice(d2_u32 flags)
 {
 #ifdef D2_USEREGCACHE
@@ -235,7 +237,7 @@ d2_device *d2_opendevice(d2_u32 flags)
 
 	d2_devicedata *handle = (d2_devicedata *)d2_getmem_p(sizeof(d2_devicedata));
 
-	if (NULL != handle) {
+	if (handle != NULL) {
 		/* initialize device context */
 		handle->flags = flags;
 		handle->errorcode = D2_OK;
@@ -326,11 +328,12 @@ d2_device *d2_opendevice(d2_u32 flags)
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_closedevice(d2_device *handle)
 {
 	d2_s32 result;
 	d2_devicedata **prev;
+
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 
 	/* release hardware if assigned */
@@ -342,11 +345,11 @@ d2_s32 d2_closedevice(d2_device *handle)
 
 	/* find in chain */
 	prev = &g_devicechain;
-	while ((NULL != prev) && (*prev != handle)) {
+	while ((prev != NULL) && (*prev != handle)) {
 		prev = (d2_devicedata **)*prev;
 	}
 
-	if (NULL == prev) {
+	if (prev == NULL) {
 		return D2_INVALIDDEVICE;
 	}
 
@@ -390,15 +393,14 @@ d2_s32 d2_closedevice(d2_device *handle)
  *
  * returns:
  *   integer error code (0 is no error)
- * */
+ */
 d2_s32 d2_geterror(const d2_device *handle)
 {
 	d2_s32 errorCode;
 
-	if (NULL != handle) {
+	if (handle != NULL) {
 		/*D2_VALIDATE( handle, D2_INVALIDDEVICE);*/ /* PRQA S 4130, 3112 */ /* $Misra:
-										       #DEBUG_MACRO
-										       $*/
+										       #DEBUG_MACRO $*/
 
 		errorCode = D2_DEV(handle)->errorcode;
 
@@ -423,7 +425,7 @@ d2_s32 d2_geterror(const d2_device *handle)
  *
  * returns:
  *   string with human readable error description, or 0 if an error occurs
- * */
+ */
 const d2_char *d2_geterrorstring(const d2_device *handle)
 {
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -444,7 +446,7 @@ const d2_char *d2_geterrorstring(const d2_device *handle)
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_inithw(d2_device *handle, d2_u32 flags)
 {
 #ifdef D2_USEREGCACHE
@@ -483,7 +485,8 @@ d2_s32 d2_inithw(d2_device *handle, d2_u32 flags)
 	}
 
 	/* initialize default display lists (allocates memory -> can't be done before
-	 * lowlevel initialization!!) */
+	 * lowlevel initialization!!)
+	 */
 	d2_dev->renderbuffer[0] = (d2_rbuffer *)d2_newrenderbuffer(handle, d2_dev->dlistblocksize,
 								   d2_dev->dlistblocksize);
 	d2_dev->renderbuffer[1] = (d2_rbuffer *)d2_newrenderbuffer(handle, d2_dev->dlistblocksize,
@@ -532,7 +535,7 @@ d2_s32 d2_inithw(d2_device *handle, d2_u32 flags)
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_deinithw(d2_device *handle)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -602,7 +605,7 @@ d2_s32 d2_deinithw(d2_device *handle)
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_inithwburstlengthlimit(d2_device *handle, d2_busburstlength burstlengthFBread,
 				 d2_busburstlength burstlengthFBwrite,
 				 d2_busburstlength burstlengthTX, d2_busburstlength burstlengthDL)
@@ -623,7 +626,7 @@ d2_s32 d2_inithwburstlengthlimit(d2_device *handle, d2_busburstlength burstlengt
  *
  * returns:
  *   handle for lowlevel device, or NULL if an error occurs
- * */
+ */
 d1_device *d2_level1interface(const d2_device *handle)
 {
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -668,7 +671,7 @@ d1_device *d2_level1interface(const d2_device *handle)
  *
  * see also:
  *  <d2_getrevisionstringhw>
- * */
+ */
 d2_u32 d2_getrevisionhw(const d2_device *handle)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -681,7 +684,7 @@ d2_u32 d2_getrevisionhw(const d2_device *handle)
  * dst      - Destination string
  * src      - Null-terminated source string
  * dst_size - Size of destination string in chars
- * */
+ */
 static void d2_strcpy(d2_char *dst, const d2_char *src, d2_u32 dst_size)
 {
 	if ((NULL == dst) || (0 == dst_size)) {
@@ -704,10 +707,10 @@ static void d2_strcpy(d2_char *dst, const d2_char *src, d2_u32 dst_size)
  * dst      - Destination string
  * src      - Null-terminated source string
  * dst_size - Size of destination string in chars
- * */
+ */
 static void d2_strcat(d2_char *dst, const d2_char *src, d2_u32 dst_size)
 {
-	if (NULL == dst) {
+	if (dst == NULL) {
 		return;
 	}
 
@@ -725,13 +728,14 @@ static void d2_strcat(d2_char *dst, const d2_char *src, d2_u32 dst_size)
  * a_dst    - Destination string
  * a_number - unsigned integer number
  * a_size   - Size of destination string in chars
- * */
+ */
 #ifdef NEED_D2_INTTOSTR
 static void d2_inttostr(d2_char *a_dst, d2_u32 a_number, d2_u32 a_size)
 {
 	d2_u32 digits = 0;
 	d2_u32 divisor = 1;
 	d2_u32 num = a_number;
+
 	a_size--;
 
 	/* find number of digits */
@@ -765,12 +769,13 @@ static void d2_inttostr(d2_char *a_dst, d2_u32 a_number, d2_u32 a_size)
  * a_dst    - Destination string
  * a_number - unsigned integer number
  * a_size   - Size of destination string in chars
- * */
+ */
 static void d2_hextostr(d2_char *a_dst, d2_u32 a_number, d2_u32 a_size)
 {
 	d2_u32 digits = 0;
 	d2_u32 divisor = 1;
 	d2_u32 num = a_number;
+
 	a_size--;
 
 	/* find number of digits */
@@ -797,11 +802,11 @@ static void d2_hextostr(d2_char *a_dst, d2_u32 a_number, d2_u32 a_size)
 			/* empty else block to satisfy MISRA rule 14.10/2004 */
 		}
 		/* else if (digit < 16)
-		   {
-		     *a_dst = '-';
-		     a_dst++;
-		   }
-		*/ /* (note) block never reached */
+		 * {
+		 *   *a_dst = '-';
+		 *   a_dst++;
+		 * }
+		 */ /* (note) block never reached */
 		a_number -= digit * divisor;
 		a_size--;
 		digits--;
@@ -825,7 +830,7 @@ static void d2_hextostr(d2_char *a_dst, d2_u32 a_number, d2_u32 a_size)
  *
  * see also:
  *  <d2_getrevisionhw>
- * */
+ */
 const d2_char *d2_getrevisionstringhw(const d2_device *handle)
 {
 	static d2_char g_revisionstring[256];
@@ -916,7 +921,7 @@ const d2_char *d2_getrevisionstringhw(const d2_device *handle)
  *
  * see also:
  *   <d2_setdlistblocksize>
- * */
+ */
 d2_s32 d2_lowlocalmemmode(d2_device *handle, d2_u32 dlistblockfactor, d2_u32 dlistblocks)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -944,7 +949,7 @@ d2_s32 d2_lowlocalmemmode(d2_device *handle, d2_u32 dlistblockfactor, d2_u32 dli
 
 /*--------------------------------------------------------------------------
  * Group: Rendering Mode
- * */
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_selectrendermode
@@ -975,12 +980,12 @@ d2_s32 d2_lowlocalmemmode(d2_device *handle, d2_u32 dlistblockfactor, d2_u32 dli
  *
  * see also:
  *   <d2_outlinewidth>, <d2_shadowoffset>
- * */
+ */
 d2_s32 d2_selectrendermode(d2_device *handle, d2_u32 mode)
 {
 	d2_u32 oldmode;
 
-	if (NULL == handle) {
+	if (handle == NULL) {
 		return D2_INVALIDDEVICE;
 	}
 	/*D2_VALIDATE( handle, D2_INVALIDDEVICE );*/ /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO
@@ -1036,10 +1041,10 @@ d2_s32 d2_selectrendermode(d2_device *handle, d2_u32 mode)
  * returns:
  *   integer specifying the rendering mode, or 0 if an error occurs
  *
- * */
+ */
 d2_u32 d2_getrendermode(const d2_device *handle)
 {
-	if (NULL == handle) {
+	if (handle == NULL) {
 		return 0;
 	} else {
 		return D2_DEV(handle)->rendermode;
@@ -1060,7 +1065,7 @@ d2_u32 d2_getrendermode(const d2_device *handle)
  *
  * see also:
  *   <d2_selectrendermode>
- * */
+ */
 d2_s32 d2_layermerge(d2_device *handle)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -1085,7 +1090,7 @@ d2_s32 d2_layermerge(d2_device *handle)
  *
  * see also:
  *   <d2_selectrendermode>, <d2_shadowoffset>
- * */
+ */
 d2_s32 d2_outlinewidth(d2_device *handle, d2_width width)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -1112,7 +1117,7 @@ d2_s32 d2_outlinewidth(d2_device *handle, d2_width width)
  *
  * see also:
  *   <d2_selectrendermode>, <d2_outlinewidth>
- * */
+ */
 d2_s32 d2_shadowoffset(d2_device *handle, d2_point x, d2_point y)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -1125,7 +1130,7 @@ d2_s32 d2_shadowoffset(d2_device *handle, d2_point x, d2_point y)
 
 /*--------------------------------------------------------------------------
  * Group: Utility Functions
- * */
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_flushframe
@@ -1140,13 +1145,12 @@ d2_s32 d2_shadowoffset(d2_device *handle, d2_point x, d2_point y)
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_flushframe(d2_device *handle)
 {
-	if (NULL != handle) {
+	if (handle != NULL) {
 		/*D2_VALIDATE( handle, D2_INVALIDDEVICE );*/ /* PRQA S 4130, 3112 */ /* $Misra:
-											#DEBUG_MACRO
-											$*/
+											#DEBUG_MACRO $*/
 
 		/* wait for current frame rendering to end */
 		d2hw_finish(handle);
@@ -1182,13 +1186,12 @@ d2_s32 d2_flushframe(d2_device *handle)
  *
  * see also:
  *   <d2_getdlistblocksize>, <d2_newrenderbuffer>
- * */
+ */
 d2_s32 d2_setdlistblocksize(d2_device *handle, d2_u32 size)
 {
-	if (NULL != handle) {
+	if (handle != NULL) {
 		/*D2_VALIDATE( handle, D2_INVALIDDEVICE );*/ /* PRQA S 4130, 3112 */ /* $Misra:
-											#DEBUG_MACRO
-											$*/
+											#DEBUG_MACRO $*/
 
 		D2_CHECKERR(size > 2, D2_VALUETOOSMALL);
 			/* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -1215,7 +1218,7 @@ d2_s32 d2_setdlistblocksize(d2_device *handle, d2_u32 size)
  *
  * see also:
  *   <d2_setdlistblocksize>, <d2_newrenderbuffer>
- * */
+ */
 d2_u32 d2_getdlistblocksize(const d2_device *handle)
 {
 	D2_VALIDATEP(handle, D2_INVALIDDEVICE); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -1237,7 +1240,7 @@ d2_u32 d2_getdlistblocksize(const d2_device *handle)
  *
  * see also:
  *   <d2_setdlistblocksize>, <d2_newrenderbuffer>
- * */
+ */
 d2_u32 d2_getdlistblockcount(d2_device *handle)
 {
 	d2_dlist *dlist;
@@ -1278,7 +1281,7 @@ d2_u32 d2_getdlistblockcount(d2_device *handle)
  *
  * see also:
  *   <d2_getdlistblockcount>
- * */
+ */
 d2_s32 d2_commandspending(d2_device *handle)
 {
 	d2_dlist *dlist;
@@ -1294,7 +1297,8 @@ d2_s32 d2_commandspending(d2_device *handle)
 	}
 
 	/* in lowlocalmem mode, we might be at the beginning of the first block, but in
-	 * another vidmem block */
+	 * another vidmem block
+	 */
 	if ((NULL != dlist->vidmem_blocks) &&
 	    (dlist->vidmem_blocks->currentaddress == dlist->vidmem_blocks->blocks[0])) {
 		return 1;

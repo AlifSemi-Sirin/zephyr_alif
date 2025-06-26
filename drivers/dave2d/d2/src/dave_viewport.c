@@ -13,14 +13,16 @@
  *  2009-10-29 CSe  Allow cliprect of width or height 1.
  *  2011-09-05 MRe  removed check of fb format change; check now done at render start
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 /*--------------------------------------------------------------------------
  *
  * Title: Viewport Functions
  * Framebuffer and view specific functions.
  *
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -29,7 +31,7 @@
 
 /*--------------------------------------------------------------------------
  * Group: Clipping
- * */
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_cliprect
@@ -52,7 +54,7 @@
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_cliprect(d2_device *handle, d2_border xmin, d2_border ymin, d2_border xmax,
 		   d2_border ymax)
 {
@@ -126,29 +128,29 @@ d2_s32 d2_cliprect(d2_device *handle, d2_border xmin, d2_border ymin, d2_border 
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_getcliprect(d2_device *handle, d2_border *xmin, d2_border *ymin, d2_border *xmax,
 		      d2_border *ymax)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE);
 		/* PRQA S 4130, 3112, 3453 */ /* $Misra: #DEBUG_MACRO $*/
 
-	if (0 != xmin) {
+	if (xmin != 0) {
 		*xmin = D2_INT4(D2_DEV(handle)->clipxmin);
 			/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 	}
 
-	if (0 != ymin) {
+	if (ymin != 0) {
 		*ymin = D2_INT4(D2_DEV(handle)->clipymin);
 			/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 	}
 
-	if (0 != xmax) {
+	if (xmax != 0) {
 		*xmax = D2_INT4(D2_DEV(handle)->clipxmax);
 			/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 	}
 
-	if (0 != ymax) {
+	if (ymax != 0) {
 		*ymax = D2_INT4(D2_DEV(handle)->clipymax);
 			/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 	}
@@ -158,7 +160,7 @@ d2_s32 d2_getcliprect(d2_device *handle, d2_border *xmin, d2_border *ymin, d2_bo
 
 /*--------------------------------------------------------------------------
  * Group: Framebuffer management
- * */
+ */
 
 /*--------------------------------------------------------------------------
  * function: d2_framebuffer
@@ -192,7 +194,7 @@ d2_s32 d2_getcliprect(d2_device *handle, d2_border *xmin, d2_border *ymin, d2_bo
  *
  * note:
  *   this function has no effect on what memory area is currently visible
- * */
+ */
 d2_s32 d2_framebuffer(d2_device *handle, void *ptr, d2_s32 pitch, d2_u32 width, d2_u32 height,
 		      d2_s32 format)
 {
@@ -255,7 +257,7 @@ d2_s32 d2_framebuffer(d2_device *handle, void *ptr, d2_s32 pitch, d2_u32 width, 
 	/* update context modeflags */
 	ctx = D2_DEV(handle)->ctxchain;
 
-	while (NULL != ctx) {
+	while (ctx != NULL) {
 		ctx->cr2mask = D2_DEV(handle)->fbstylemask | ctx->blendmask | ctx->tbstylemask |
 			       ctx->alphablendmask | ctx->rlemask | ctx->clutmask | ctx->colkeymask;
 
@@ -292,30 +294,30 @@ d2_s32 d2_framebuffer(d2_device *handle, void *ptr, d2_s32 pitch, d2_u32 width, 
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
- * */
+ */
 d2_s32 d2_getframebuffer(d2_device *handle, void **ptr, d2_s32 *pitch, d2_u32 *width,
 			 d2_u32 *height, d2_s32 *format)
 {
 	D2_VALIDATE(handle, D2_INVALIDDEVICE);
 		/* PRQA S 4130, 3112, 3453 */ /* $Misra: #DEBUG_MACRO $*/
 
-	if (NULL != ptr) {
+	if (ptr != NULL) {
 		*ptr = D2_DEV(handle)->framebuffer;
 	}
 
-	if (0 != pitch) {
+	if (pitch != 0) {
 		*pitch = D2_DEV(handle)->pitch;
 	}
 
-	if (0 != width) {
+	if (width != 0) {
 		*width = D2_DEV(handle)->fbwidth;
 	}
 
-	if (0 != height) {
+	if (height != 0) {
 		*height = D2_DEV(handle)->fbheight;
 	}
 
-	if (0 != format) {
+	if (format != 0) {
 		*format = D2_DEV(handle)->fbformat;
 	}
 
@@ -323,31 +325,31 @@ d2_s32 d2_getframebuffer(d2_device *handle, void **ptr, d2_s32 *pitch, d2_u32 *w
 }
 
 /*--------------------------------------------------------------------------
- * */
+ */
 d2_s32 d2_clipbbox_intern(const d2_devicedata *handle, d2_bbox *box)
 {
 	/* trivial reject */
 	if ((box->xmin > handle->clipxmax) || (box->ymin > handle->clipymax) ||
 	    (box->xmax < handle->clipxmin) || (box->ymax < handle->clipymin)) {
 		return 0;
-	} else {
-		/* box clipping */
-		if (box->xmin < handle->clipxmin) {
-			box->xmin = handle->clipxmin;
-		}
-
-		if (box->ymin < handle->clipymin) {
-			box->ymin = handle->clipymin;
-		}
-
-		if (box->xmax > handle->clipxmax) {
-			box->xmax = handle->clipxmax;
-		}
-
-		if (box->ymax > handle->clipymax) {
-			box->ymax = handle->clipymax;
-		}
-
-		return 1;
 	}
+
+    /* box clipping */
+	if (box->xmin < handle->clipxmin) {
+		box->xmin = handle->clipxmin;
+	}
+
+	if (box->ymin < handle->clipymin) {
+		box->ymin = handle->clipymin;
+	}
+
+	if (box->xmax > handle->clipxmax) {
+		box->xmax = handle->clipxmax;
+	}
+
+	if (box->ymax > handle->clipymax) {
+		box->ymax = handle->clipymax;
+	}
+
+	return 1;
 }

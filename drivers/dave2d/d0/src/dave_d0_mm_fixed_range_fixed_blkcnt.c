@@ -43,13 +43,15 @@
  * heap.                                                                   * heapsize :  size of the
  * heap.                                                                           * maxblocks :
  * maximum number of blocks.                                                                   *
- */                                                                                                   *
-void d0_fixed_range_fixed_blkcnt_heapinit( void* ctrlblk, void* heapaddr, unsigned int heapsize, unsigned int maxblocks)
+ */
+*void d0_fixed_range_fixed_blkcnt_heapinit(void *ctrlblk, void *heapaddr, unsigned int heapsize,
+					   unsigned int maxblocks)
 {
 	unsigned int i;
 	unsigned int alignedaddr;
 	/* create heap structure */
 	d0_fixed_range_fixed_blkcnt_heap *heap = (d0_fixed_range_fixed_blkcnt_heap *)ctrlblk;
+
 	heap->freeblocks =
 		(d0_fixed_range_fixed_blk_memblock *)((char *)ctrlblk +
 						      sizeof(d0_fixed_range_fixed_blkcnt_heap));
@@ -130,13 +132,13 @@ void d0_fixed_range_fixed_blkcnt_heapinit( void* ctrlblk, void* heapaddr, unsign
  *                                                                                                        *
  * Return Value: * 0 in case of an error, the size of the freed memory block. *
  */
-*unsigned int
-d0_fixed_range_fixed_blkcnt_heapfree(void *ctrlblk, void *ptr)
+*unsigned int d0_fixed_range_fixed_blkcnt_heapfree(void *ctrlblk, void *ptr)
 {
 	d0_fixed_range_fixed_blkcnt_heap *heap = (d0_fixed_range_fixed_blkcnt_heap *)ctrlblk;
 	/* find ptr in used list */
 	d0_fixed_range_fixed_blk_memblock *used_blk = heap->usedblocks;
 	d0_fixed_range_fixed_blk_memblock *last_used = used_blk + heap->maxidx;
+
 	while ((used_blk <= last_used) && (used_blk->addr != ptr)) {
 		++used_blk;
 	}
@@ -214,13 +216,13 @@ d0_fixed_range_fixed_blkcnt_heapfree(void *ctrlblk, void *ptr)
  *                                                                                                        *
  * Return Value: * 0 in case of an error, the size of the memory block. *
  */
-*unsigned int
-d0_fixed_range_fixed_blkcnt_heapmsize(void *ctrlblk, void *ptr)
+*unsigned int d0_fixed_range_fixed_blkcnt_heapmsize(void *ctrlblk, void *ptr)
 {
 	d0_fixed_range_fixed_blkcnt_heap *heap = (d0_fixed_range_fixed_blkcnt_heap *)ctrlblk;
 	/* find ptr in used list */
 	d0_fixed_range_fixed_blk_memblock *used_blk = heap->usedblocks;
 	d0_fixed_range_fixed_blk_memblock *last_used = used_blk + heap->maxidx;
+
 	while ((used_blk <= last_used) && (used_blk->addr != ptr)) {
 		++used_blk;
 	}

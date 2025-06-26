@@ -9,7 +9,8 @@
  * Changes:
  *  2008-01-14 ASc  changed comments from C++ to C, removed tabs
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -18,9 +19,9 @@
 
 /*--------------------------------------------------------------------------
  *
- * */
-static D2_INLINE void d2_setupulimiter_intern(d2_devicedata *handle, const d2_contextdata *ctx,
-					      const d2_bbox *bbox); /* MISRA */
+ */
+static D2_INLINE void d2_setupulimiter_intern(d2_devicedata * handle, const d2_contextdata * ctx,
+					      const d2_bbox * bbox); /* MISRA */
 
 static D2_INLINE void d2_setupulimiter_invert_intern(d2_devicedata *handle,
 						     const d2_contextdata *ctx,
@@ -28,7 +29,7 @@ static D2_INLINE void d2_setupulimiter_invert_intern(d2_devicedata *handle,
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static D2_INLINE void d2_setupulimiter_intern(d2_devicedata *handle, const d2_contextdata *ctx,
 					      const d2_bbox *bbox)
 {
@@ -36,7 +37,8 @@ static D2_INLINE void d2_setupulimiter_intern(d2_devicedata *handle, const d2_co
 
 	if (0 != (ctx->patulim[0].mode & d2_grad_aapattern)) {
 		/* special pattern setup for autoaligned mapping using relative point, offset and
-		 * direction */
+		 * direction
+		 */
 		x = ctx->patulim[0].x1;
 		y = ctx->patulim[0].y1;
 		s = (((x * ctx->patulim[0].xadd) + (y * ctx->patulim[0].yadd)) >> 4) +
@@ -59,7 +61,7 @@ static D2_INLINE void d2_setupulimiter_intern(d2_devicedata *handle, const d2_co
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static D2_INLINE void d2_setupulimiter_invert_intern(d2_devicedata *handle,
 						     const d2_contextdata *ctx, const d2_bbox *bbox)
 {
@@ -67,7 +69,8 @@ static D2_INLINE void d2_setupulimiter_invert_intern(d2_devicedata *handle,
 
 	if (0 != (ctx->patulim[0].mode & d2_grad_aapattern)) {
 		/* special pattern setup for autoaligned mapping using relative point, offset and
-		 * direction */
+		 * direction
+		 */
 		x = ctx->patulim[0].x1;
 		y = (bbox->ymax - bbox->ymin) - ctx->patulim[0].y1;
 		s = (((x * ctx->patulim[0].xadd) - (y * ctx->patulim[0].yadd)) >> 4) +
@@ -84,18 +87,16 @@ static D2_INLINE void d2_setupulimiter_invert_intern(d2_devicedata *handle,
 	D2_DLISTWRITES(D2_LUSTART, -s);
 	D2_DLISTWRITES(D2_LUXADD, ctx->patulim[0].xadd);
 	D2_DLISTWRITES(D2_LUYADD, -ctx->patulim[0].yadd);
-
-	return;
 }
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 void d2_setuppattern(d2_devicedata *handle, const d2_contextdata *ctx, const d2_bbox *bbox,
 		     d2_s32 flip)
 {
 	if (d2_fm_pattern == ctx->fillmode) {
-		if (0 != flip) {
+		if (flip != 0) {
 			d2_setupulimiter_invert_intern(handle, ctx, bbox);
 		} else {
 			d2_setupulimiter_intern(handle, ctx, bbox);

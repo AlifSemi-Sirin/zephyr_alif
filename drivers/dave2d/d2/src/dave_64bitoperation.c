@@ -1,54 +1,54 @@
 /*
-****************************************************************************
-PROJECT : D/AVE
-FILE    : $Id: dave_64bitoperation.c 23623 2011-08-19 12:01:17Z nan.wang $
-============================================================================
-DESCRIPTION
-D/AVE driver
-============================================================================
-C O P Y R I G H T
-============================================================================
-Copyright (c) 2011
-by
-Renesas Electronics (Europe) GmbH.
-Arcadiastrasse 10
-D-40472 Duesseldorf
-Germany
-All rights reserved.
-============================================================================
-Purpose: only for testing
-
-Warranty Disclaimer
-
-Because the Product(s) is licensed free of charge, there is no warranty
-of any kind whatsoever and expressly disclaimed and excluded by Renesas,
-either expressed or implied, including but not limited to those for
-non-infringement of intellectual property, merchantability and/or
-fitness for the particular purpose.
-Renesas shall not have any obligation to maintain, service or provide bug
-fixes for the supplied Product(s) and/or the Application.
-
-Each User is solely responsible for determining the appropriateness of
-using the Product(s) and assumes all risks associated with its exercise
-of rights under this Agreement, including, but not limited to the risks
-and costs of program errors, compliance with applicable laws, damage to
-or loss of data, programs or equipment, and unavailability or
-interruption of operations.
-
-Limitation of Liability
-
-In no event shall Renesas be liable to the User for any incidental,
-consequential, indirect, or punitive damage (including but not limited
-to lost profits) regardless of whether such liability is based on breach
-of contract, tort, strict liability, breach of warranties, failure of
-essential purpose or otherwise and even if advised of the possibility of
-such damages. Renesas shall not be liable for any services or products
-provided by third party vendors, developers or consultants identified or
-referred to the User by Renesas in connection with the Product(s) and/or the
-Application.
-
-****************************************************************************
-*/
+ ****************************************************************************
+ * PROJECT : D/AVE
+ * FILE    : $Id: dave_64bitoperation.c 23623 2011-08-19 12:01:17Z nan.wang $
+ * ============================================================================
+ * DESCRIPTION
+ * D/AVE driver
+ * ============================================================================
+ * C O P Y R I G H T
+ * ============================================================================
+ * Copyright (c) 2011
+ * by
+ * Renesas Electronics (Europe) GmbH.
+ * Arcadiastrasse 10
+ * D-40472 Duesseldorf
+ * Germany
+ * All rights reserved.
+ * ============================================================================
+ * Purpose: only for testing
+ *
+ * Warranty Disclaimer
+ *
+ * Because the Product(s) is licensed free of charge, there is no warranty
+ * of any kind whatsoever and expressly disclaimed and excluded by Renesas,
+ * either expressed or implied, including but not limited to those for
+ * non-infringement of intellectual property, merchantability and/or
+ * fitness for the particular purpose.
+ * Renesas shall not have any obligation to maintain, service or provide bug
+ * fixes for the supplied Product(s) and/or the Application.
+ *
+ * Each User is solely responsible for determining the appropriateness of
+ * using the Product(s) and assumes all risks associated with its exercise
+ * of rights under this Agreement, including, but not limited to the risks
+ * and costs of program errors, compliance with applicable laws, damage to
+ * or loss of data, programs or equipment, and unavailability or
+ * interruption of operations.
+ *
+ * Limitation of Liability
+ *
+ * In no event shall Renesas be liable to the User for any incidental,
+ * consequential, indirect, or punitive damage (including but not limited
+ * to lost profits) regardless of whether such liability is based on breach
+ * of contract, tort, strict liability, breach of warranties, failure of
+ * essential purpose or otherwise and even if advised of the possibility of
+ * such damages. Renesas shall not be liable for any services or products
+ * provided by third party vendors, developers or consultants identified or
+ * referred to the User by Renesas in connection with the Product(s) and/or the
+ * Application.
+ *
+ ****************************************************************************
+ */
 /*--------------------------------------------------------------------------
  *
  * Title: functions for 64bit operations
@@ -59,7 +59,8 @@ Application.
  * This module is excluded only when the compiler supports long long
  *
  *
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 /***********************************************************
  *
@@ -278,8 +279,7 @@ void d2_mul3264(d2_s32 a, const d2_int64 *b, d2_int64 *res)
 #elif defined(__ICCV850__)
 	res->high32 = __upper_mul64(ui_a, ui_b_low32);
 		/* !!!!! Wrong should be unsigned mul!!!*/ /* PRQA S 3335 */ /* $Misra:
-										#COMPILER_INTRINSIC
-										$*/
+										#COMPILER_INTRINSIC $*/
 #else
 	res->high32 = __MULUH(ui_a, ui_b_low32);
 		/* PRQA S 3335 */ /* $Misra: #COMPILER_INTRINSIC $*/
@@ -287,7 +287,7 @@ void d2_mul3264(d2_s32 a, const d2_int64 *b, d2_int64 *res)
 	res->high32 += (d2_s32)(ui_a * ui_b_high32);
 
 	/* restore sign*/
-	if (0 != negative) {
+	if (negative != 0) {
 		if (0 != res->low32) {
 			res->high32 = (d2_s32)((d2_u32)res->high32 ^ 0xFFFFFFFFu);
 			res->low32 = (res->low32 ^ 0xFFFFFFFFu) + 1u;
@@ -329,7 +329,7 @@ void d2_div6432(const d2_int64 *dividend, d2_s32 divisor, d2_int64 *res)
 	res->low32 = 0;
 
 	/* Test for division by 0*/
-	if (0 == divisor) {
+	if (divisor == 0) {
 		return; /* return 0*/
 	}
 
@@ -355,10 +355,11 @@ void d2_div6432(const d2_int64 *dividend, d2_s32 divisor, d2_int64 *res)
 
 	remainder = (d2_u32)(dividend_high32 - (res->high32 * divisor));
 
-	if (0 != remainder) {
+	if (remainder != 0) {
 		d2_int64 tmp64;
 		d2_u32 tmp32;
 		d2_u32 remMask = 0x80000000u;
+
 		shift = 0;
 		for (;;) {
 			if (0 != (remainder & remMask)) {
@@ -375,6 +376,7 @@ void d2_div6432(const d2_int64 *dividend, d2_s32 divisor, d2_int64 *res)
 					/* result is 64-bit */
 					d2_int64 tmp64_2;
 					d2_int64 tmp64_3;
+
 					tmp64_3.low32 = dividend_low32;
 					tmp64_3.high32 = dividend_high32;
 					d2_sub64(&tmp64_3, &tmp64, &tmp64_2);
@@ -393,7 +395,7 @@ void d2_div6432(const d2_int64 *dividend, d2_s32 divisor, d2_int64 *res)
 	}
 
 	/* restore sign*/
-	if (0 != negative) {
+	if (negative != 0) {
 		if (0 != res->low32) {
 			res->high32 = -res->high32 - 1;
 			res->low32 = (res->low32 ^ 0xFFFFFFFFu) + 1u;

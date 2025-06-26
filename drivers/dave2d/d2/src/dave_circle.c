@@ -11,7 +11,8 @@
  *  2008-09-25 MRe  added  ctx->circleextendoffset
  *  2008-10-02 MRe  fix of blurred circles
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -24,7 +25,7 @@
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_rendercircle_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point x, d2_point y,
 			      d2_width r, d2_width w)
 {
@@ -39,6 +40,7 @@ d2_s32 d2_rendercircle_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_poi
 		/* ring bounding box */
 		d2_width wh = w / 2;
 		d2_width wr = (d2_width)(wh + r);
+
 		bbox.xmin = (d2_point)D2_FLOOR4(x - wr);
 		bbox.ymin = (d2_point)D2_FLOOR4(y - wr);
 		bbox.xmax = (d2_point)D2_CEIL4(x + wr);
@@ -101,7 +103,7 @@ d2_s32 d2_rendercircle_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_poi
 	d2_setupmaterial_intern(handle, ctx);
 	tmask = ctx->thresholdmask;
 
-	if (0 == w) {
+	if (w == 0) {
 		/* solid circle */
 
 		/* set register values (geometric parameters) */
@@ -123,7 +125,8 @@ d2_s32 d2_rendercircle_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_poi
 		/* circle ring */
 
 		/* determine whether we can use bandfilter (2lim) ring without distortion
-		 * this is the case if r/w is larger than sqrt(r) */
+		 * this is the case if r/w is larger than sqrt(r)
+		 */
 		if ((r > (w * w)) && (0 == (ctx->features & d2_feat_blur))) {
 			/* 2lim ring */
 			r = (d2_width)(r + D2_EPSILON);
@@ -142,7 +145,8 @@ d2_s32 d2_rendercircle_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_poi
 			delay = 0;
 		} else {
 			/* 4lim ring (more accurate)
-			 * set register values (geometric parameters) */
+			 * set register values (geometric parameters)
+			 */
 			d2_circlesetup_intern(handle, ctx, 0, x, y, (d2_width)(r + (w / 2)), 0, 0,
 					      1);
 
@@ -178,7 +182,7 @@ d2_s32 d2_rendercircle_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_poi
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_rendercircle_solid(d2_device *handle, d2_point x, d2_point y, d2_width r, d2_width w)
 {
 	(void)d2_rendercircle_intern(D2_DEV(handle), D2_DEV(handle)->ctxsolid, x, y, r, w);
@@ -187,7 +191,7 @@ d2_s32 d2_rendercircle_solid(d2_device *handle, d2_point x, d2_point y, d2_width
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_rendercircle_shadow(d2_device *handle, d2_point x, d2_point y, d2_width r, d2_width w)
 {
 	(void)d2_rendercircle_intern(D2_DEV(handle), D2_DEV(handle)->ctxoutline,
@@ -199,7 +203,7 @@ d2_s32 d2_rendercircle_shadow(d2_device *handle, d2_point x, d2_point y, d2_widt
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_rendercircle_outline(d2_device *handle, d2_point x, d2_point y, d2_width r, d2_width w)
 {
 	d2_width wo = D2_DEV(handle)->outlinewidth;
@@ -224,7 +228,7 @@ d2_s32 d2_rendercircle_outline(d2_device *handle, d2_point x, d2_point y, d2_wid
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_rendercircle_solidoutline(d2_device *handle, d2_point x, d2_point y, d2_width r,
 				    d2_width w)
 {
@@ -254,7 +258,7 @@ d2_s32 d2_rendercircle_solidoutline(d2_device *handle, d2_point x, d2_point y, d
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_rendercircle_solidshadow(d2_device *handle, d2_point x, d2_point y, d2_width r,
 				   d2_width w)
 {

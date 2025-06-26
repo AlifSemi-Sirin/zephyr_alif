@@ -9,7 +9,8 @@
  * Changes:
  *  2007-08-29 ASc  removed tabs, add comments, changed C++ to C comments
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -28,7 +29,7 @@
 /*--------------------------------------------------------------------------
  * minimalistic 32->16 bit integer square root (no hw divide/multiply needed)
  * unrolled for speed
- * */
+ */
 d2_s32 d2_sqrt(d2_u32 x)
 {
 	d2_u32 temp, y = 0;
@@ -78,7 +79,7 @@ d2_s32 d2_sqrt(d2_u32 x)
  * Find next larger power of two - 1
  * e.g. given number x=73 -> next larger power of two is 128,
  * the result is 128-1 = 127 (number with all bits set)
- * */
+ */
 d2_u32 d2_pow2mask(d2_u32 x)
 {
 	x |= (x >> 1);

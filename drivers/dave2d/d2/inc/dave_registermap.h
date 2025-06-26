@@ -17,11 +17,12 @@
  *  2010-02-18 MRe  added Control2 bits for Alpha channel blending
  *  2012-09-25 BSp  MISRA cleanup
  *  2029-02-05 MRe  added Control3 register for max burst lengths
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #ifndef __1_dave_registermap_h_H
 #define __1_dave_registermap_h_H
-/*--------------------------------------------------------------------------- */
+/*---------------------------------------------------------------------------*/
 
 #define D2_STATUS     0
 #define D2_HWREVISION 1
@@ -61,7 +62,8 @@
 #define D2_ORIGIN 32 /* framebffer address of first enum pixel */
 
 /* reserved 33 - framebuffer minimum address
- * reserved 34 - framebuffer maximum address */
+ * reserved 34 - framebuffer maximum address
+ */
 
 #define D2_LUSTART  36 /* texture limiter1 */
 #define D2_LUXADD   37
@@ -236,22 +238,6 @@
 #define D2PC_CPUINSTRREADS  16
 #define D2PC_RLEREWINDS     20
 #define D2PC_CYCLES         31
-
-/* Hardware revision feature bits */
-/*
-#define D2FB_SWDAVE     BIT(16)
-#define D2FB_DLR        BIT(17)
-#define D2FB_FBCACHE    BIT(18)
-#define D2FB_TXCACHE    BIT(19)
-#define D2FB_PERFCOUNT  BIT(20)
-#define D2FB_TEXCLUT    BIT(21)
-#define D2FB_FBPREFETCH BIT(22)
-#define D2FB_RLEUNIT    BIT(23)
-#define D2FB_TEXCLUT256 BIT(24)
-#define D2FB_COLORKEY   BIT(25)
-#define D2FB_HILIMITERPRECISION   BIT(26)
-#define D2FB_ALPHACHANNELBLENDING   BIT(27)
-*/
 
 /*--------------------------------------------------------------------------- */
 #endif

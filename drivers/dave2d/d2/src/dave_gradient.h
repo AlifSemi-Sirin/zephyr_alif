@@ -9,7 +9,8 @@
  * Changes:
  *  2008-01-14 ASc  changed comments from C++ to C, removed tabs
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #ifndef __1_dave_gradient_h_H
 #define __1_dave_gradient_h_H
@@ -29,19 +30,18 @@ typedef d2_u32 d2_gradient_modes;
 /*---------------------------------------------------------------------------
  * Gradient structure */
 
-typedef struct _d2_gradientdata
-{
-   d2_u32   mode;
-   d2_s32   xadd;
-   d2_s32   yadd;
-   d2_s32   xadd2;
-   d2_s32   yadd2;
-   d2_point x1,y1;
+typedef struct _d2_gradientdata {
+	d2_u32   mode;
+	d2_s32   xadd;
+	d2_s32   yadd;
+	d2_s32   xadd2;
+	d2_s32   yadd2;
+	d2_point x1, y1;
 } d2_gradientdata;
 
 /*--------------------------------------------------------------------------- */
 
-D2_EXTERN void d2_initgradient_intern( d2_gradientdata *grad );
+D2_EXTERN void d2_initgradient_intern(d2_gradientdata *grad);
 
 /*--------------------------------------------------------------------------- */
 #endif

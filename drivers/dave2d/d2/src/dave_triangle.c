@@ -9,7 +9,8 @@
  * Changes:
  *  2008-01-14 ASc  changed comments from C++ to C, removed tabs
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -24,14 +25,14 @@
 
 /*--------------------------------------------------------------------------
  *
- * */
-static d2_s32 d2_rendertri_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point x1,
+ */
+static d2_s32 d2_rendertri_intern(d2_devicedata * handle, d2_contextdata * ctx, d2_point x1,
 				  d2_point y1, d2_point x2, d2_point y2, d2_point x3, d2_point y3,
 				  d2_u32 flags); /* MISRA */
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static d2_s32 d2_rendertri_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point x1,
 				  d2_point y1, d2_point x2, d2_point y2, d2_point x3, d2_point y3,
 				  d2_u32 flags)
@@ -67,7 +68,8 @@ static d2_s32 d2_rendertri_intern(d2_devicedata *handle, d2_contextdata *ctx, d2
 	}
 
 	/* classify edges (right edge flags) - basically inverted dys
-	 * but using dxs instead of dys for horizontal edges */
+	 * but using dxs instead of dys for horizontal edges
+	 */
 	bR1 = (0 == dy1) ? (idxm & 1u) : (idym & 1u);
 	bR2 = (0 == dy2) ? (idxm & 2u) : (idym & 2u);
 	bR3 = (0 == dy3) ? (idxm & 4u) : (idym & 4u);
@@ -209,7 +211,8 @@ static d2_s32 d2_rendertri_intern(d2_devicedata *handle, d2_contextdata *ctx, d2
 			pymax = bbox.ymax - bbox.ymin;
 
 			/* left edges have different directions
-			 * find mid y scanline (ymid - ymin) */
+			 * find mid y scanline (ymid - ymin)
+			 */
 			switch ((dym & (idym >> 1)) ^ (idym & (dym >> 1))) {
 			case 1:
 				pymid = y3;
@@ -230,12 +233,10 @@ static d2_s32 d2_rendertri_intern(d2_devicedata *handle, d2_contextdata *ctx, d2
 			if (pymid > (pymax / 2)) {
 				dxb1 = 0; /* bottom-up */
 				delay = (d2_u32)D2_INT4(pymax - pymid) + 1u;
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 			} else {
 				delay = (d2_u32)D2_INT4(pymid) + 1u;
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 			}
 		}
 	}
@@ -245,8 +246,7 @@ static d2_s32 d2_rendertri_intern(d2_devicedata *handle, d2_contextdata *ctx, d2
 
 	/* disable spanstore for thin geometry (not supported in hw anyway) */
 	if ((bbox.xmax - bbox.xmin) >=
-	    D2_FIX4(4)) /* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-	{
+	    D2_FIX4(4)) { /* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 		control |= D2C_SPANSTORE;
 	}
 
@@ -299,7 +299,7 @@ static d2_s32 d2_rendertri_intern(d2_devicedata *handle, d2_contextdata *ctx, d2
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_rendertri_solid(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 			  d2_point x3, d2_point y3, d2_u32 flags)
 {
@@ -311,7 +311,7 @@ d2_s32 d2_rendertri_solid(d2_device *handle, d2_point x1, d2_point y1, d2_point 
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_rendertri_shadow(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 			   d2_point x3, d2_point y3, d2_u32 flags)
 {
@@ -329,7 +329,7 @@ d2_s32 d2_rendertri_shadow(d2_device *handle, d2_point x1, d2_point y1, d2_point
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_rendertri_solidshadow(d2_device *handle, d2_point x1, d2_point y1, d2_point x2,
 				d2_point y2, d2_point x3, d2_point y3, d2_u32 flags)
 {
@@ -356,7 +356,7 @@ d2_s32 d2_rendertri_solidshadow(d2_device *handle, d2_point x1, d2_point y1, d2_
  * shared edges do not contribute to vertex tangents. to implement this
  * a set of line/open polyline/closed polyline configurations is used
  * depending on the shared edge configuration
- * */
+ */
 d2_s32 d2_rendertri_outline(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 			    d2_point x3, d2_point y3, d2_u32 flags)
 {
@@ -444,7 +444,7 @@ d2_s32 d2_rendertri_outline(d2_device *handle, d2_point x1, d2_point y1, d2_poin
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_rendertri_solidoutline(d2_device *handle, d2_point x1, d2_point y1, d2_point x2,
 				 d2_point y2, d2_point x3, d2_point y3, d2_u32 flags)
 {

@@ -7,11 +7,13 @@
  * Project:     D/AVE
  * File:        dave_irq.c
  * Description: This file defines the D/AVE driver IRQ setting functions
- *---------------------------------------------------------------------------*/
+ *---------------------------------------------------------------------------
+ */
 
 /*-----------------------------------------------------------------------------
  * Includes
- *---------------------------------------------------------------------------*/
+ *---------------------------------------------------------------------------
+ */
 #include <stddef.h>
 #include <zephyr/kernel.h>
 #include <zephyr/irq.h>
@@ -34,7 +36,7 @@ static struct k_sem irqSem;
 void GPU2D_IRQHandler(void *arg);
 
 /*--------------------------------------------------------------------------*/
-void d1_irq_enable()
+void d1_irq_enable(void)
 {
 	/* Clear all interrupts and enable DLIST IRQ */
 	D1_REG(D2_IRQCTL) = D1_IRQCTL_ENABLE;
@@ -47,7 +49,7 @@ void d1_irq_enable()
 }
 
 /*--------------------------------------------------------------------------*/
-void d1_irq_disable()
+void d1_irq_disable(void)
 {
 	/* Clear all interrupts and disable DLIST IRQ */
 	D1_REG(D2_IRQCTL) = D1_IRQCTL_DISABLE;

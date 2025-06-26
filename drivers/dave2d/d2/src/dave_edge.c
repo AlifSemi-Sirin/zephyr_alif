@@ -10,7 +10,8 @@
  *  2008-01-14 ASc  changed comments from C++ to C, removed tabs
  *  2010-09-28 MRe  use 64bit arithmetic for blurring calculation
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -18,7 +19,7 @@
 
 /*--------------------------------------------------------------------------
  * line length may not be zero.
- * */
+ */
 void d2_lineedge_setup3blur_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 dx, d2_s32 dy,
 				   d2_u32 flags, const d2_contextdata *ctx, d2_s32 *length)
 {
@@ -41,7 +42,7 @@ void d2_lineedge_setup3blur_intern(d2_limdata *lim, d2_point px, d2_point py, d2
 
 	l = ((d2_s32)(ctx->invblur * 16u)) / d2_sqrt((d2_u32)((dx * dx) + (dy * dy)));
 
-	if (NULL != length) {
+	if (length != NULL) {
 		*length = l;
 	}
 
@@ -68,7 +69,7 @@ void d2_lineedge_setup3blur_intern(d2_limdata *lim, d2_point px, d2_point py, d2
 
 /*--------------------------------------------------------------------------
  * line length may not be zero.
- * */
+ */
 void d2_lineedge_setup3sqrt_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 dx, d2_s32 dy,
 				   d2_u32 flags, d2_s32 *length)
 {
@@ -91,7 +92,7 @@ void d2_lineedge_setup3sqrt_intern(d2_limdata *lim, d2_point px, d2_point py, d2
 
 	l = (65536 * 16) / d2_sqrt((d2_u32)((dx * dx) + (dy * dy)));
 
-	if (NULL != length) {
+	if (length != NULL) {
 		*length = l;
 	}
 
@@ -119,7 +120,7 @@ void d2_lineedge_setup3sqrt_intern(d2_limdata *lim, d2_point px, d2_point py, d2
 /*--------------------------------------------------------------------------
  * note use for thin lines (w<2) only (due to l1 norm approximation)
  * line length may not be zero.
- * */
+ */
 void d2_lineedge_setup3_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 dx, d2_s32 dy,
 			       d2_u32 flags, d2_s32 *length)
 {
@@ -143,8 +144,7 @@ void d2_lineedge_setup3_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32
 	/* find line octant */
 	if (dx < 0) {
 		if (dy < 0) {
-			/* dx -
-			 * dy - */
+			/* dx - dy - */
 			if (dx < dy) {
 				/* 3. octant
 				 * l = -dx, nx = -dy / -dx, ny = -1 */
@@ -153,21 +153,18 @@ void d2_lineedge_setup3_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s1 = (py << (16 - 4)) - ((px * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				s2 = (px << (16 - 4)) + ((py * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				s3 = -((px + dx) << (16 - 4)) - (((py + dy) * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = n;
 				ya = D2_FIX16(-1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 
-				if (NULL != length) {
+				if (length != NULL) {
 					*length = -dx;
 				}
 
@@ -179,27 +176,23 @@ void d2_lineedge_setup3_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s1 = (-px << (16 - 4)) - ((py * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				s2 = (py << (16 - 4)) - ((px * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				s3 = (((px + dx) * n) >> 4) - ((py + dy) << (16 - 4));
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = D2_FIX16(1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				ya = n;
 
-				if (NULL != length) {
+				if (length != NULL) {
 					*length = -dy;
 				}
 			}
 		} else {
-			/* dx -
-			 * dy + */
+			/* dx - dy + */
 			if (-dx > dy) {
 				/* 5. octant
 				 * l = dx, nx = -dy / -dx, ny = -1 */
@@ -208,21 +201,18 @@ void d2_lineedge_setup3_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s1 = (py << (16 - 4)) - ((px * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				s2 = (px << (16 - 4)) + ((py * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				s3 = -((px + dx) << (16 - 4)) - (((py + dy) * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = n;
 				ya = D2_FIX16(-1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 
-				if (NULL != length) {
+				if (length != NULL) {
 					*length = dx;
 				}
 
@@ -234,29 +224,25 @@ void d2_lineedge_setup3_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s1 = (px << (16 - 4)) - ((py * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				s2 = (-py << (16 - 4)) - ((px * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				s3 = (((px + dx) * n) >> 4) + ((py + dy) << (16 - 4));
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = D2_FIX16(-1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				ya = n;
 
-				if (NULL != length) {
+				if (length != NULL) {
 					*length = dy;
 				}
 			}
 		}
 	} else {
 		if (dy < 0) {
-			/* dx +
-			 * dy - */
+			/* dx + dy - */
 			if (dx > -dy) {
 				/* 1. octant
 				 * l = dx, nx = -dy / dx, ny = 1 */
@@ -265,21 +251,19 @@ void d2_lineedge_setup3_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s1 = (-py << (16 - 4)) - ((px * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				s2 = (-px << (16 - 4)) + ((py * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
 							     $*/
 				s3 = ((px + dx) << (16 - 4)) - (((py + dy) * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = n;
 				ya = D2_FIX16(1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 
-				if (NULL != length) {
+				if (length != NULL) {
 					*length = dx;
 				}
 
@@ -291,27 +275,23 @@ void d2_lineedge_setup3_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s1 = (-px << (16 - 4)) - ((py * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				s2 = (py << (16 - 4)) - ((px * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				s3 = (((px + dx) * n) >> 4) - ((py + dy) << (16 - 4));
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = D2_FIX16(1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				ya = n;
 
-				if (NULL != length) {
+				if (length != NULL) {
 					*length = -dy;
 				}
 			}
 		} else {
-			/* dx +
-			 * dy + */
+			/* dx + dy + */
 			if (dx > dy) {
 				/* 8. octant
 				 * l = dx, nx = -dy / dx, ny = 1 */
@@ -320,21 +300,18 @@ void d2_lineedge_setup3_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s1 = (-py << (16 - 4)) - ((px * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				s2 = (-px << (16 - 4)) + ((py * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				s3 = ((px + dx) << (16 - 4)) - (((py + dy) * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = n;
 				ya = D2_FIX16(1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 
-				if (NULL != length) {
+				if (length != NULL) {
 					*length = dx;
 				}
 
@@ -354,13 +331,12 @@ void d2_lineedge_setup3_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32
 							     $*/
 				s3 = (((px + dx) * n) >> 4) + ((py + dy) << (16 - 4));
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = D2_FIX16(-1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				ya = n;
 
-				if (NULL != length) {
+				if (length != NULL) {
 					*length = dy;
 				}
 			}
@@ -384,7 +360,7 @@ void d2_lineedge_setup3_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32
  * edge deltas may not both be zero. centering of start value (+0.5) is
  * omitted here. this was necessary to allow highler level to change center
  * for non shared edges.
- * */
+ */
 void d2_triedge_setup_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 dx, d2_s32 dy,
 			     d2_u32 rightedge)
 {
@@ -394,8 +370,7 @@ void d2_triedge_setup_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 d
 	/* find edge octant */
 	if (dx < 0) {
 		if (dy < 0) {
-			/* dx -
-			 * dy - */
+			/* dx - dy - */
 			px = (d2_point)(px + (d2_point)dx);
 			py = (d2_point)(py + (d2_point)dy);
 
@@ -405,8 +380,7 @@ void d2_triedge_setup_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 d
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = ((py * n) >> 4) - (px << (16 - 4));
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = D2_FIX16(1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				ya = -n;
@@ -416,23 +390,20 @@ void d2_triedge_setup_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 d
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = (py << (16 - 4)) - ((px * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = n;
 				ya = D2_FIX16(-1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 			}
 		} else {
-			/* dx -
-			 * dy + */
+			/* dx - dy + */
 			if (-dx > dy) {
 				/* 5. octant */
 				n = (dy << 16) / dx;
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = (py << (16 - 4)) - ((px * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = n;
 				ya = D2_FIX16(-1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
@@ -442,8 +413,7 @@ void d2_triedge_setup_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 d
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = (px << (16 - 4)) - ((py * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = D2_FIX16(-1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				ya = n;
@@ -451,8 +421,7 @@ void d2_triedge_setup_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 d
 		}
 	} else {
 		if (dy < 0) {
-			/* dx +
-			 * dy - */
+			/* dx + dy - */
 			px = (d2_point)(px + (d2_point)dx);
 			py = (d2_point)(py + (d2_point)dy);
 
@@ -462,8 +431,7 @@ void d2_triedge_setup_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 d
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = ((px * n) >> 4) - (py << (16 - 4));
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = -n;
 				ya = D2_FIX16(1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
@@ -473,23 +441,20 @@ void d2_triedge_setup_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 d
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = ((py * n) >> 4) - (px << (16 - 4));
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = D2_FIX16(1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				ya = -n;
 			}
 		} else {
-			/* dx +
-			 * dy + */
+			/* dx + dy + */
 			if (dx > dy) {
 				/* 8. octant */
 				n = (dy << 16) / dx;
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = ((px * n) >> 4) - (py << (16 - 4));
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = -n;
 				ya = D2_FIX16(1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
@@ -499,8 +464,7 @@ void d2_triedge_setup_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 d
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = (px << (16 - 4)) - ((py * n) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = D2_FIX16(-1);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 				ya = n;
@@ -508,7 +472,7 @@ void d2_triedge_setup_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 d
 		}
 	}
 
-	if (0 != rightedge) {
+	if (rightedge != 0) {
 		s += D2_EPSILON;
 	}
 
@@ -520,7 +484,7 @@ void d2_triedge_setup_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 d
 /*--------------------------------------------------------------------------
  * note should use sqrtsetup when bluring long distance
  * edge deltas may not both be zero.
- * */
+ */
 void d2_triedge_setupblur_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 dx, d2_s32 dy,
 				 const d2_contextdata *ctx)
 {
@@ -535,8 +499,7 @@ void d2_triedge_setupblur_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 	/* find edge octant */
 	if (dx < 0) {
 		if (dy < 0) {
-			/* dx -
-			 * dy - */
+			/* dx - dy - */
 			px = (d2_point)(px + (d2_point)dx);
 			py = (d2_point)(py + (d2_point)dy);
 
@@ -544,12 +507,10 @@ void d2_triedge_setupblur_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 				/* 3. octant */
 				D2_CAST32TO64((dx << 16) / dy, &n);
 					/* n = (dx << 16) / dy; */ /* PRQA S 4131 */ /* $Misra:
-											#PERF_ARITHMETIC_SHIFT_LEFT
-											$*/
+											#PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = ((py * D2_CAST64TO32(&n)) >> 4) - (px << (16 - 4));
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = invBlur;
 				D2_MUL3264(invBlur, &n, &tmp);
 				D2_SHIFTRIGHT64(&tmp, 16, &n);
@@ -558,12 +519,10 @@ void d2_triedge_setupblur_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 				/* 4. octant */
 				D2_CAST32TO64((dy << 16) / dx, &n);
 					/* n = (dy << 16) / dx; */ /* PRQA S 4131 */ /* $Misra:
-											#PERF_ARITHMETIC_SHIFT_LEFT
-											$*/
+											#PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = (py << (16 - 4)) - ((px * D2_CAST64TO32(&n)) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				D2_MUL3264(invBlur, &n, &tmp);
 				D2_SHIFTRIGHT64(&tmp, 16, &n);
 				xa = D2_CAST64TO32(&n);
@@ -576,12 +535,10 @@ void d2_triedge_setupblur_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 				/* 5. octant */
 				D2_CAST32TO64((dy << 16) / dx, &n);
 					/* n = (dy << 16) / dx; */ /* PRQA S 4131 */ /* $Misra:
-											#PERF_ARITHMETIC_SHIFT_LEFT
-											$*/
+											#PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = (py << (16 - 4)) - ((px * D2_CAST64TO32(&n)) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				D2_MUL3264(invBlur, &n, &tmp);
 				D2_SHIFTRIGHT64(&tmp, 16, &n);
 				xa = D2_CAST64TO32(&n); /* (n * redinv) >> 8; */
@@ -590,12 +547,10 @@ void d2_triedge_setupblur_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 				/* 6. octant */
 				D2_CAST32TO64((dx << 16) / dy, &n);
 					/* n = (dx << 16) / dy; */ /* PRQA S 4131 */ /* $Misra:
-											#PERF_ARITHMETIC_SHIFT_LEFT
-											$*/
+											#PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = (px << (16 - 4)) - ((py * D2_CAST64TO32(&n)) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = -invBlur;
 				D2_MUL3264(invBlur, &n, &tmp);
 				D2_SHIFTRIGHT64(&tmp, 16, &n);
@@ -604,8 +559,7 @@ void d2_triedge_setupblur_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 		}
 	} else {
 		if (dy < 0) {
-			/* dx +
-			 * dy - */
+			/* dx + dy - */
 			px = (d2_point)(px + (d2_point)dx);
 			py = (d2_point)(py + (d2_point)dy);
 
@@ -613,12 +567,10 @@ void d2_triedge_setupblur_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 				/* 1. octant */
 				D2_CAST32TO64((dy << 16) / dx, &n);
 					/* n = (dy << 16) / dx; */ /* PRQA S 4131 */ /* $Misra:
-											#PERF_ARITHMETIC_SHIFT_LEFT
-											$*/
+											#PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = ((px * D2_CAST64TO32(&n)) >> 4) - (py << (16 - 4));
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				D2_MUL3264(invBlur, &n, &tmp);
 				D2_SHIFTRIGHT64(&tmp, 16, &n);
 				xa = -D2_CAST64TO32(&n); /* (-n * redinv) >> 8; */
@@ -627,20 +579,17 @@ void d2_triedge_setupblur_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 				/* 2. octant */
 				D2_CAST32TO64((dx << 16) / dy, &n);
 					/* n = (dx << 16) / dy; */ /* PRQA S 4131 */ /* $Misra:
-											#PERF_ARITHMETIC_SHIFT_LEFT
-											$*/
+											#PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = ((py * D2_CAST64TO32(&n)) >> 4) - (px << (16 - 4));
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = invBlur;
 				D2_MUL3264(invBlur, &n, &tmp);
 				D2_SHIFTRIGHT64(&tmp, 16, &n);
 				ya = -D2_CAST64TO32(&n);
 			}
 		} else {
-			/* dx +
-			 * dy + */
+			/* dx + dy + */
 			if (dx > dy) {
 				/* 8. octant */
 				D2_CAST32TO64((dy << 16) / dx, &n);
@@ -649,8 +598,7 @@ void d2_triedge_setupblur_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 											$*/
 				s = ((px * D2_CAST64TO32(&n)) >> 4) - (py << (16 - 4));
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				D2_MUL3264(invBlur, &n, &tmp);
 				D2_SHIFTRIGHT64(&tmp, 16, &n);
 				xa = -D2_CAST64TO32(&n);
@@ -659,15 +607,12 @@ void d2_triedge_setupblur_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 				/* 7. octant */
 				D2_CAST32TO64((dx << 16) / dy, &n);
 					/* n = (dx << 16) / dy; */ /* PRQA S 4131 */ /* $Misra:
-											#PERF_ARITHMETIC_SHIFT_LEFT
-											$*/
+											#PERF_ARITHMETIC_SHIFT_LEFT $*/
 				s = (px << (16 - 4)) - ((py * D2_CAST64TO32(&n)) >> 4);
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 					/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT
-							     $*/
+					/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 				xa = -invBlur;
 				D2_MUL3264(invBlur, &n, &tmp);
 				D2_SHIFTRIGHT64(&tmp, 16, &n);
@@ -687,7 +632,7 @@ void d2_triedge_setupblur_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 /*--------------------------------------------------------------------------
  * warning: will overflow earlier than aa version. might blow 11bit border
  * edge deltas may not both be zero.
- * */
+ */
 void d2_triedge_setupnoaa_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 dx, d2_s32 dy,
 				 d2_s32 rightedge)
 {
@@ -706,7 +651,7 @@ void d2_triedge_setupnoaa_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 	ya = dx << (16 - 4); /* PRQA S 4131       */    /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 
 	/* use > instead of >= threshold on right/top edges */
-	if (0 != rightedge) {
+	if (rightedge != 0) {
 		s += D2_EPSILON;
 	}
 
@@ -717,7 +662,7 @@ void d2_triedge_setupnoaa_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 void d2_triedge_setupsqrt_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s32 dx, d2_s32 dy,
 				 d2_s32 rightedge)
 {
@@ -737,7 +682,7 @@ void d2_triedge_setupsqrt_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 		/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 
 	/* use > instead of >= threshold on right/top edges */
-	if (0 != rightedge) {
+	if (rightedge != 0) {
 		s += D2_EPSILON;
 	}
 
@@ -748,7 +693,7 @@ void d2_triedge_setupsqrt_intern(d2_limdata *lim, d2_point px, d2_point py, d2_s
 
 /*--------------------------------------------------------------------------
  * used to setup bottom-up rendering
- * */
+ */
 void d2_invertlimiter_intern(d2_limdata *lim, d2_s32 ystep)
 {
 	/* prestep and flip */

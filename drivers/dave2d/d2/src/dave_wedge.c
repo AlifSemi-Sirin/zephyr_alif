@@ -10,7 +10,8 @@
  *  2008-01-14 ASc  changed comments from C++ to C, removed tabs
  *  2009-03-31 MRe  improved bbox for convex wedges (less enumeration; fix artefact for very small
  *angles) 2010-09-22 MRe  don't render convex wedges with angle of 0 2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -21,7 +22,7 @@
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static d2_u32 count_leading_zeroes16(d2_u16 v);                                  /* MISRA */
 static d2_s32 is_same_direction(d2_s32 nx1, d2_s32 ny1, d2_s32 nx2, d2_s32 ny2); /* MISRA */
 static d2_s32 d2_renderwedge_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point x,
@@ -30,12 +31,12 @@ static d2_s32 d2_renderwedge_intern(d2_devicedata *handle, d2_contextdata *ctx, 
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static d2_u32 count_leading_zeroes16(d2_u16 v)
 {
 	d2_u32 c = 0;
 
-	if (0 == v) {
+	if (v == 0) {
 		c = 16;
 	} else {
 		if (0 == (v & 0xff00)) {
@@ -64,7 +65,7 @@ static d2_u32 count_leading_zeroes16(d2_u16 v)
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static d2_s32 is_same_direction(d2_s32 nx1, d2_s32 ny1, d2_s32 nx2, d2_s32 ny2)
 {
 	/* arguments are 16.16 fixedpoint */
@@ -115,8 +116,7 @@ static d2_s32 is_same_direction(d2_s32 nx1, d2_s32 ny1, d2_s32 nx2, d2_s32 ny2)
 	scalarprod = (nx1 * ny2) + (ny1 * -nx2);
 	scalarprod = (scalarprod < 0) ? -scalarprod : scalarprod;
 
-	if (scalarprod < D2_FIX16(1)) /* some epsilon */
-	{
+	if (scalarprod < D2_FIX16(1)) { /* some epsilon */
 		return 1;
 	} else {
 		return 0;
@@ -125,7 +125,7 @@ static d2_s32 is_same_direction(d2_s32 nx1, d2_s32 ny1, d2_s32 nx2, d2_s32 ny2)
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static d2_s32 d2_renderwedge_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point x,
 				    d2_point y, d2_width r, d2_width w, d2_s32 nx1, d2_s32 ny1,
 				    d2_s32 nx2, d2_s32 ny2, d2_u32 flags)
@@ -204,8 +204,7 @@ static d2_s32 d2_renderwedge_intern(d2_devicedata *handle, d2_contextdata *ctx, 
 		(void)d2_getcliprect(handle, &bxmin, &bymin, &bxmax, &bymax);
 
 		if (((nx1 + nx2) > 0) &&
-		    (((ny2 >= 0) && (ny1 <= 0)) || ((ny1 >= 0) && (ny2 <= 0)))) /* right half */
-		{
+		    (((ny2 >= 0) && (ny1 <= 0)) || ((ny1 >= 0) && (ny2 <= 0)))) { /* right half */
 			d2_border val = (d2_border)(D2_INT4(x - (D2_FIX4(1) >> 1)));
 				/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 
@@ -215,8 +214,7 @@ static d2_s32 d2_renderwedge_intern(d2_devicedata *handle, d2_contextdata *ctx, 
 		}
 
 		if (((nx1 + nx2) < 0) &&
-		    (((ny2 >= 0) && (ny1 <= 0)) || ((ny1 >= 0) && (ny2 <= 0)))) /* left half */
-		{
+		    (((ny2 >= 0) && (ny1 <= 0)) || ((ny1 >= 0) && (ny2 <= 0)))) { /* left half */
 			d2_border val = (d2_border)(D2_INT4(x + (D2_FIX4(1) >> 1)));
 				/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 
@@ -226,8 +224,7 @@ static d2_s32 d2_renderwedge_intern(d2_devicedata *handle, d2_contextdata *ctx, 
 		}
 
 		if (((ny1 + ny2) < 0) &&
-		    ((((nx2 >= 0) && (nx1 <= 0)) || ((nx1 >= 0) && (nx2 <= 0))))) /* upper half */
-		{
+		    ((((nx2 >= 0) && (nx1 <= 0)) || ((nx1 >= 0) && (nx2 <= 0))))) { /* upper half */
 			d2_border val = (d2_border)(D2_INT4(y + (D2_FIX4(1) >> 1)));
 				/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 
@@ -237,8 +234,7 @@ static d2_s32 d2_renderwedge_intern(d2_devicedata *handle, d2_contextdata *ctx, 
 		}
 
 		if (((ny1 + ny2) > 0) &&
-		    (((nx2 >= 0) && (nx1 <= 0)) || ((nx1 >= 0) && (nx2 <= 0)))) /* lower half */
-		{
+		    (((nx2 >= 0) && (nx1 <= 0)) || ((nx1 >= 0) && (nx2 <= 0)))) { /* lower half */
 			d2_border val = (d2_border)(D2_INT4(y - (D2_FIX4(1) >> 1)));
 				/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 
@@ -263,7 +259,7 @@ static d2_s32 d2_renderwedge_intern(d2_devicedata *handle, d2_contextdata *ctx, 
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderwedge_solid(d2_device *handle, d2_point x, d2_point y, d2_width r, d2_width w,
 			    d2_s32 nx1, d2_s32 ny1, d2_s32 nx2, d2_s32 ny2, d2_u32 flags)
 {
@@ -275,7 +271,7 @@ d2_s32 d2_renderwedge_solid(d2_device *handle, d2_point x, d2_point y, d2_width 
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderwedge_outline(d2_device *handle, d2_point x, d2_point y, d2_width r, d2_width w,
 			      d2_s32 nx1, d2_s32 ny1, d2_s32 nx2, d2_s32 ny2, d2_u32 flags)
 {
@@ -284,18 +280,20 @@ d2_s32 d2_renderwedge_outline(d2_device *handle, d2_point x, d2_point y, d2_widt
 				    nx2, ny2, flags);
 
 	/*   d2_renderline_intern_split( D2_DEV(handle), D2_DEV(handle)->ctxoutline, x1,y1, x2,y2, w
-	 * + D2_DEV(handle)->outlinewidth * 2, flags, edge_buffer, &edge_bbox, NULL ); */
+	 * + D2_DEV(handle)->outlinewidth * 2, flags, edge_buffer, &edge_bbox, NULL );
+	 */
 
 	return D2_OK;
 }
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderwedge_shadow(d2_device *handle, d2_point x, d2_point y, d2_width r, d2_width w,
 			     d2_s32 nx1, d2_s32 ny1, d2_s32 nx2, d2_s32 ny2, d2_u32 flags)
 {
 	d2_point sx, sy;
+
 	sx = D2_DEV(handle)->soffx;
 	sy = D2_DEV(handle)->soffy;
 
@@ -307,7 +305,7 @@ d2_s32 d2_renderwedge_shadow(d2_device *handle, d2_point x, d2_point y, d2_width
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderwedge_solidoutline(d2_device *handle, d2_point x, d2_point y, d2_width r,
 				   d2_width w, d2_s32 nx1, d2_s32 ny1, d2_s32 nx2, d2_s32 ny2,
 				   d2_u32 flags)
@@ -328,11 +326,12 @@ d2_s32 d2_renderwedge_solidoutline(d2_device *handle, d2_point x, d2_point y, d2
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderwedge_solidshadow(d2_device *handle, d2_point x, d2_point y, d2_width r, d2_width w,
 				  d2_s32 nx1, d2_s32 ny1, d2_s32 nx2, d2_s32 ny2, d2_u32 flags)
 {
 	d2_point sx, sy;
+
 	sx = D2_DEV(handle)->soffx;
 	sy = D2_DEV(handle)->soffy;
 

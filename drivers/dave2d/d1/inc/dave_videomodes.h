@@ -13,15 +13,16 @@
  *                    without display driver
  *  2008-01-14 ASc  - removed tabs, changed C++ to C comments, added
  *                    new videomode for Ravin platform (320x240)
- * */
+ */
 
 /*--------------------------------------------------------------------------
  * Video modes for display controller.
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #ifndef __1_dave_videomodes_h_H
 #define __1_dave_videomodes_h_H
-/*--------------------------------------------------------------------------- */
+/*---------------------------------------------------------------------------*/
 
 #define D1_VIDEO_OFF          0
 #define D1_VIDEO_DEFAULT      1
@@ -38,7 +39,8 @@
 #define D1_VIDEO_480_480_60   12
 
 /*---------------------------------------------------------------------------
- * each entry fills a d1_videomode struct (see below) */
+ * each entry fills a d1_videomode struct (see below)
+ */
 
 #define D1_VIDEODESC_OFF                                                                           \
 	{                                                                                          \

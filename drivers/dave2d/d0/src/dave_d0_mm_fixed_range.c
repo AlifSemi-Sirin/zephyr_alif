@@ -103,7 +103,8 @@ void *d0_fixed_range_heapalloc(void *ctrlblk, unsigned int size)
 		/* see if block is free and fits */
 		if ((!runptr->lastblk) && (runptr->size >= (size + sizeof(memblk)))) {
 			/* write information for next block, if we produce a new fragment, which has
-			 * as least MINIMUM_BLOCKSIZE Bytes usable size*/
+			 * as least MINIMUM_BLOCKSIZE Bytes usable size
+			 */
 			if ((runptr->size - size - sizeof(memblk)) > MINIMUM_BLOCKSIZE) {
 				/* calc address of the resulting fragment  */
 				newfragment = (memblk *)((char *)runptr + size + sizeof(memblk));
@@ -158,8 +159,7 @@ unsigned int d0_fixed_range_heapfree(void *ctrlblk, void *ptr)
 	runptr->lastblk = NULL;
 	/* now merge with last blk if inside of the heap */
 	if ((void *)last_blk >= heap->base) {
-		if (!last_blk->lastblk) /* last blk is a free block, so we have to merge */
-		{
+		if (!last_blk->lastblk) { /* last blk is a free block, so we have to merge */
 			last_blk->size += runptr->size + sizeof(memblk);
 			/* overwrite old infos from blk */
 			runptr->size = 0;
@@ -217,6 +217,7 @@ int checkHeap(void *ctrlblk, unsigned int size)
 	memblk *runptr = heap->base;
 	memblk *last = 0;
 	int blkindex = 1;
+
 	while ((void *)runptr <= heap->end) {
 		counted_size += runptr->size + sizeof(memblk);
 		if (!(runptr->size)) {
@@ -259,6 +260,7 @@ int testheap(void *base, unsigned int size)
 	void *ptr[100];
 	int blk;
 	int sizeofblk;
+
 	if (base) {
 		d0_fixed_range_setheapmem(base, size);
 		/* init ptr array */
@@ -308,6 +310,7 @@ int testheap(void *base, unsigned int size)
 	}
 	/* check if the size of the heap is still the same */
 	unsigned int mbsize = ((memblk *)(((d0_heap *)base)->base))->size;
+
 	if (mbsize != (size - sizeof(memblk))) {
 		printf("size(0x%x) of memoryblock does not equals the initial size (0x%x)\n",
 		       mbsize, size);
@@ -322,7 +325,7 @@ int testheap(void *base, unsigned int size)
  * returns: 0 on failure
  *          1 on success
  *****************************************************************************/
-int testheapmanager()
+int testheapmanager(void)
 {
 	int i = 100;
 	int base, size;
@@ -343,7 +346,7 @@ int testheapmanager()
 	}
 }
 
-int main()
+int main(void)
 {
 	testheapmanager();
 }

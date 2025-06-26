@@ -9,7 +9,8 @@
  * Changes:
  *  2008-01-14 ASc  changed comments from C++ to C, removed tabs
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -17,18 +18,18 @@
 
 /*--------------------------------------------------------------------------
  *
- * */
-static D2_INLINE d2_u32 d2_initgradient_lin(d2_devicedata *handle, const d2_gradientdata *grad,
-					    const d2_bbox *bbox, d2_u32 index,
+ */
+static D2_INLINE d2_u32 d2_initgradient_lin(d2_devicedata * handle, const d2_gradientdata * grad,
+					    const d2_bbox * bbox, d2_u32 index,
 					    d2_u32 usehiprecision); /* to satisfy MISRA rule 3450 */
 
-static D2_INLINE d2_u32 d2_initgradient_quad(const d2_devicedata *handle,
-					     const d2_gradientdata *grad, const d2_bbox *bbox,
+static D2_INLINE d2_u32 d2_initgradient_quad(const d2_devicedata * handle,
+					     const d2_gradientdata * grad, const d2_bbox * bbox,
 					     d2_u32 index);
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 void d2_initgradient_intern(d2_gradientdata *grad)
 {
 	grad->mode = d2_grad_none;
@@ -42,9 +43,9 @@ void d2_initgradient_intern(d2_gradientdata *grad)
 
 /*--------------------------------------------------------------------------
  *
- * */
-static D2_INLINE d2_u32 d2_initgradient_lin(d2_devicedata *handle, const d2_gradientdata *grad,
-					    const d2_bbox *bbox, d2_u32 index,
+ */
+static D2_INLINE d2_u32 d2_initgradient_lin(d2_devicedata * handle, const d2_gradientdata *grad,
+					    const d2_bbox * bbox, d2_u32 index,
 					    d2_u32 usehiprecision)
 {
 	d2_s32 x, y, s;
@@ -76,7 +77,7 @@ static D2_INLINE d2_u32 d2_initgradient_lin(d2_devicedata *handle, const d2_grad
 		ctrl |= D2C_UNION12 << (index >> 1);
 	}
 
-	if (0 == usehiprecision) {
+	if (usehiprecision == 0) {
 		D2_DLISTWRITES(D2_L1START + index, -s);
 		D2_DLISTWRITES(D2_L1XADD + index, grad->xadd);
 		D2_DLISTWRITES(D2_L1YADD + index, grad->yadd);
@@ -94,7 +95,7 @@ static D2_INLINE d2_u32 d2_initgradient_lin(d2_devicedata *handle, const d2_grad
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 static D2_INLINE d2_u32 d2_initgradient_quad(const d2_devicedata *handle,
 					     const d2_gradientdata *grad, const d2_bbox *bbox,
 					     d2_u32 index)
@@ -110,7 +111,7 @@ static D2_INLINE d2_u32 d2_initgradient_quad(const d2_devicedata *handle,
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_u32 d2_initgradients_intern(d2_devicedata *handle, const d2_contextdata *ctx,
 			       const d2_bbox *bbox, d2_u32 limindex, d2_u32 control)
 {

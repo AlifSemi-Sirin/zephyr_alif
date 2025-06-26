@@ -13,7 +13,8 @@
  *  2008-01-14 ASc  changed comments from C++ to C, removed tabs
  *  2011-01-20 SSt  made lines and polylines thread safe (eliminated globals)
  *  2012-09-25 BSp  MISRA cleanup
- *-------------------------------------------------------------------------- */
+ *--------------------------------------------------------------------------
+ */
 
 #include "dave_driver.h"
 #include "dave_intern.h"
@@ -28,7 +29,7 @@
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point x1, d2_point y1,
 			    d2_point x2, d2_point y2, d2_width w, d2_u32 flags,
 			    d2_limdata *edge_buffer, d2_bbox *edge_bbox, const d2_s32 *connectors)
@@ -46,8 +47,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 	d2_s32 dx = x2 - x1;
 	d2_s32 dy = y2 - y1;
 
-	if (0 == (dx | dy)) /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $ */
-	{
+	if (0 == (dx | dy)) { /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $ */
 		return 0;
 	}
 
@@ -257,7 +257,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 
 		if (0 != (flags & d2_le_exclude_start)) {
 			/* endpoint (no second part) */
-			if (0 != flip) {
+			if (flip != 0) {
 				x = (d2_point)(x2 - bbox.xmin);
 				y = (d2_point)(bbox.ymax - y2);
 			} else {
@@ -270,7 +270,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 			swt = 1;
 		} else {
 			/* startpoint */
-			if (0 != flip) {
+			if (flip != 0) {
 				x = x1;
 				y = (d2_point)((bbox.ymax - bbox.ymin) - y1);
 			} else {
@@ -308,7 +308,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 
 	/* disable antialiasing for excluded endpoints */
 	if (0 != (flags & d2_le_exclude_start)) {
-		if (0 == swt) {
+		if (swt == 0) {
 			control |= D2C_LIM2THRESHOLD;
 		} else {
 			control |= D2C_LIM5THRESHOLD;
@@ -334,7 +334,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 	}
 
 	if (0 != (flags & d2_le_exclude_end)) {
-		if (0 != swt) {
+		if (swt != 0) {
 			control |= D2C_LIM2THRESHOLD;
 		} else {
 			control |= D2C_LIM5THRESHOLD;
@@ -374,7 +374,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 	}
 
 	/* optimize for span abort / span store */
-	if (0 != flip) {
+	if (flip != 0) {
 		h = D2_INT4(bbox.ymax - bbox.ymin);
 			/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 		d2_invertlimiter_intern(&edge[0], h);
@@ -392,8 +392,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 
 		if ((0 != (flags & d2_lei_ext_first_edge)) &&
 		    (0 != (connectors[0] |
-			   connectors[1]))) /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $ */
-		{
+			   connectors[1]))) { /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $ */
 			/* add first edge miter limit (L3) */
 			control |= D2C_LIM3ENABLE | (tmask & D2C_LIM3THRESHOLD);
 
@@ -401,7 +400,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 			d2_triedge_setupsqrt_intern(&edge[3], x1, y1, -connectors[1], connectors[0],
 						    0);
 
-			if (0 != flip) {
+			if (flip != 0) {
 				d2_invertlimiter_intern(&edge[3], h);
 			}
 
@@ -418,8 +417,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 
 		if ((0 != (flags & d2_lei_ext_last_edge)) &&
 		    (0 != (connectors[2] |
-			   connectors[3]))) /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $ */
-		{
+			   connectors[3]))) {/* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $ */
 			/* add last edge miter limit (L4) */
 			control |= D2C_LIM4ENABLE | (tmask & D2C_LIM4THRESHOLD);
 
@@ -428,7 +426,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 						    (d2_point)(y2 - bbox.ymin), -connectors[3],
 						    connectors[2], 0);
 
-			if (0 != flip) {
+			if (flip != 0) {
 				d2_invertlimiter_intern(&edge[3], h);
 			}
 
@@ -449,7 +447,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 	D2_DLISTWRITES(D2_L1XADD, edge[0].xadd);
 	D2_DLISTWRITES(D2_L1YADD, edge[0].yadd);
 
-	if (0 != swt) {
+	if (swt != 0) {
 		/* endpoint limiter must be in first group */
 		D2_DLISTWRITES(D2_L5START, edge[1].start);
 		D2_DLISTWRITES(D2_L5XADD, edge[1].xadd);
@@ -475,7 +473,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 	w = (d2_width)(D2_INT4((wh + ((w + 15) >> 1)) + 15));
 		/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 
-	if (0 != flip) {
+	if (flip != 0) {
 		d2_startrender_bottom_intern(handle, &bbox, (d2_u32)w);
 	} else {
 		d2_startrender_intern(handle, &bbox, (d2_u32)w);
@@ -514,7 +512,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 		}
 
 		/* restore seperation limiter to fit new bbox */
-		if (0 != flip) {
+		if (flip != 0) {
 			dx = D2_INT4(bbox2.xmin - bbox.xmin);
 				/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 			dy = D2_INT4(bbox2.ymin - bbox.ymin) - h;
@@ -548,7 +546,7 @@ d2_s32 d2_renderline_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline2_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_point x1, d2_point y1,
 			     d2_point x2, d2_point y2, d2_width w1, d2_width w2, d2_u32 flags,
 			     d2_limdata *edge_buffer, d2_bbox *edge_bbox)
@@ -566,13 +564,13 @@ d2_s32 d2_renderline2_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_poin
 
 	/* check for parallel lines
 	 *if (w1 == w2) return d2_renderline_intern( handle, ctx, x1,y1, x2,y2, w1, d2_include_both
-	 *); */
+	 *);
+	 */
 
 	/* find deltas */
 	dlx = x2 - x1;
 	dly = y2 - y1;
-	if (0 == (dlx | dly)) /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
-	{
+	if (0 == (dlx | dly)) { /* PRQA S 4130 */ /* $Misra: #PERF_BITWISE $*/
 		return 0;
 	}
 
@@ -584,13 +582,13 @@ d2_s32 d2_renderline2_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_poin
 	ny = (dlx * l) >> 8; /* PRQA S 0502 */  /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 
 	/*
-	  {
-	  // accurate calculation
-	  l = d2_sqrt( dlx*dlx + dly*dly );
-	  nx = (int) (((d2_int64)-dly * 65536) / l);
-	  ny = (int) (((d2_int64) dlx * 65536) / l);
-	  }
-	*/
+	 * {
+	 * // accurate calculation
+	 * l = d2_sqrt( dlx*dlx + dly*dly );
+	 * nx = (int) (((d2_int64)-dly * 65536) / l);
+	 * ny = (int) (((d2_int64) dlx * 65536) / l);
+	 * }
+	 */
 
 	/* find outer endpoints */
 	w1x = ((nx * w1) >> 1) >> 16; /* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
@@ -609,13 +607,11 @@ d2_s32 d2_renderline2_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_poin
 
 	/* don't render round endpoints on small lines */
 	if (d2_lc_round == cap) {
-		if (w1 < D2_FIX4(3)) /* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-		{
+		if (w1 < D2_FIX4(3)) {/* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 			flags |= d2_le_exclude_start;
 		}
 
-		if (w2 < D2_FIX4(3)) /* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
-		{
+		if (w2 < D2_FIX4(3)) { /* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
 			flags |= d2_le_exclude_end;
 		}
 	}
@@ -856,7 +852,7 @@ d2_s32 d2_renderline2_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_poin
 	}
 
 	/* optimize for span abort / span store */
-	if (0 != flip) {
+	if (flip != 0) {
 		h = D2_INT4(bbox.ymax - bbox.ymin);
 			/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 		d2_invertlimiter_intern(&edge[0], h);
@@ -899,7 +895,7 @@ d2_s32 d2_renderline2_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_poin
 	D2_DLISTWRITES(D2_L4YADD, edge[3].yadd);
 
 	/* render line part */
-	if (0 != flip) {
+	if (flip != 0) {
 		d2_startrender_bottom_intern(handle, &bbox, delay);
 	} else {
 		d2_startrender_intern(handle, &bbox, delay);
@@ -929,7 +925,7 @@ d2_s32 d2_renderline2_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_poin
 			/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 
 		/* adapt line parameters to new bounding box */
-		if (0 != flip) {
+		if (flip != 0) {
 			nx = D2_INT4(bbox2.xmin - bbox.xmin);
 				/* PRQA S 0502 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_RIGHT $*/
 			ny = D2_INT4(bbox2.ymin - bbox.ymin) - h;
@@ -976,7 +972,7 @@ d2_s32 d2_renderline2_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_poin
 
 	if (0 != cap2) {
 		/* second point required too */
-		if (1 == l) {
+		if (l == 1) {
 			/* startpoint second */
 			r = w1;
 			xp = xs;
@@ -997,7 +993,7 @@ d2_s32 d2_renderline2_intern(d2_devicedata *handle, d2_contextdata *ctx, d2_poin
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderlinedot_intern(d2_devicedata *handle, const d2_contextdata *ctx, d2_point x,
 			       d2_point y, d2_width w, d2_u32 edges, const d2_limdata *edge_buffer,
 			       const d2_bbox *edge_bbox)
@@ -1044,7 +1040,7 @@ d2_s32 d2_renderlinedot_intern(d2_devicedata *handle, const d2_contextdata *ctx,
 	grad = 2;
 
 	/* additional edges */
-	if (0 != edges) {
+	if (edges != 0) {
 		d2_s32 xr, yr;
 
 		/* find relative change of position */
@@ -1076,7 +1072,7 @@ d2_s32 d2_renderlinedot_intern(d2_devicedata *handle, const d2_contextdata *ctx,
 
 			control |= D2C_LIM4ENABLE | D2C_LIM4THRESHOLD;
 
-			if (3 == grad) {
+			if (grad == 3) {
 				grad++;
 			}
 		}
@@ -1098,7 +1094,7 @@ d2_s32 d2_renderlinedot_intern(d2_devicedata *handle, const d2_contextdata *ctx,
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline_intern_split(d2_devicedata *handle, d2_contextdata *ctx, d2_point x1,
 				  d2_point y1, d2_point x2, d2_point y2, d2_width w, d2_u32 flags,
 				  d2_limdata *edge_buffer, d2_bbox *edge_bbox,
@@ -1114,7 +1110,8 @@ d2_s32 d2_renderline_intern_split(d2_devicedata *handle, d2_contextdata *ctx, d2
 		if ((w >= D2_FIX4(3)) && (d2_lc_round == ctx->linecap) &&
 		    ((flags & d2_le_exclude_both) != d2_le_exclude_both)) {
 			/* FIX to avoid overflowing hw register in quad mode we split geometry. sad
-			 * thing! */
+			 * thing!
+			 */
 			if (0 != d2_renderline_intern(handle, ctx, x1, y1, x2, y2, w,
 						      flags | d2_le_exclude_both |
 							      d2_lei_buffer_first_edge |
@@ -1140,7 +1137,7 @@ d2_s32 d2_renderline_intern_split(d2_devicedata *handle, d2_contextdata *ctx, d2
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline_solid(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 			   d2_width w, d2_u32 flags)
 {
@@ -1155,7 +1152,7 @@ d2_s32 d2_renderline_solid(d2_device *handle, d2_point x1, d2_point y1, d2_point
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline_outline_I(d2_device *handle, d2_point x1, d2_point y1, d2_point x2,
 			       d2_point y2, d2_width w, d2_u32 flags)
 {
@@ -1170,7 +1167,7 @@ d2_s32 d2_renderline_outline_I(d2_device *handle, d2_point x1, d2_point y1, d2_p
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline_outline(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 			     d2_width w, d2_u32 flags)
 {
@@ -1186,7 +1183,7 @@ d2_s32 d2_renderline_outline(d2_device *handle, d2_point x1, d2_point y1, d2_poi
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline_shadow(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 			    d2_width w, d2_u32 flags)
 {
@@ -1207,7 +1204,7 @@ d2_s32 d2_renderline_shadow(d2_device *handle, d2_point x1, d2_point y1, d2_poin
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline_solidshadow(d2_device *handle, d2_point x1, d2_point y1, d2_point x2,
 				 d2_point y2, d2_width w, d2_u32 flags)
 {
@@ -1235,7 +1232,7 @@ d2_s32 d2_renderline_solidshadow(d2_device *handle, d2_point x1, d2_point y1, d2
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline_solidoutline(d2_device *handle, d2_point x1, d2_point y1, d2_point x2,
 				  d2_point y2, d2_width w, d2_u32 flags)
 {
@@ -1258,7 +1255,7 @@ d2_s32 d2_renderline_solidoutline(d2_device *handle, d2_point x1, d2_point y1, d
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline2_solid(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 			    d2_width w1, d2_width w2, d2_u32 flags)
 {
@@ -1273,7 +1270,7 @@ d2_s32 d2_renderline2_solid(d2_device *handle, d2_point x1, d2_point y1, d2_poin
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline2_outline(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 			      d2_width w1, d2_width w2, d2_u32 flags)
 {
@@ -1291,7 +1288,7 @@ d2_s32 d2_renderline2_outline(d2_device *handle, d2_point x1, d2_point y1, d2_po
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline2_shadow(d2_device *handle, d2_point x1, d2_point y1, d2_point x2, d2_point y2,
 			     d2_width w1, d2_width w2, d2_u32 flags)
 {
@@ -1311,7 +1308,7 @@ d2_s32 d2_renderline2_shadow(d2_device *handle, d2_point x1, d2_point y1, d2_poi
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline2_solidshadow(d2_device *handle, d2_point x1, d2_point y1, d2_point x2,
 				  d2_point y2, d2_width w1, d2_width w2, d2_u32 flags)
 {
@@ -1338,7 +1335,7 @@ d2_s32 d2_renderline2_solidshadow(d2_device *handle, d2_point x1, d2_point y1, d
 
 /*--------------------------------------------------------------------------
  *
- * */
+ */
 d2_s32 d2_renderline2_solidoutline(d2_device *handle, d2_point x1, d2_point y1, d2_point x2,
 				   d2_point y2, d2_width w1, d2_width w2, d2_u32 flags)
 {
